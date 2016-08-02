@@ -14,9 +14,7 @@ public:
 	sf::Text playerStatus;
 	sf::Text numOfGems;
 	sf::Text levelNumber;
-	sf::Text gameCode;
 	sf::Text spells;
-	sf::Text codeDisplay;
 	sf::Font font;
 
 	std::map<std::string, sf::Text> guiText;

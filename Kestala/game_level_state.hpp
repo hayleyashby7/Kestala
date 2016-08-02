@@ -24,7 +24,6 @@ private:
 	std::vector<Map>prevLevels;
 	bool noveltySearch;
 	bool start;
-	std::string code;
 	int currentLevel;
 	int maxLevel = 6;
 

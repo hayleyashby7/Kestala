@@ -22,16 +22,12 @@ void GameLevel::draw(const float dt) {
 	this->game->window.clear(sf::Color::Black);	
 	this->game->window.draw(this->game->background);
 	gui.draw(this->game->window);
-	if (start) {
-		map.draw(this->game->window);
-		player.draw(this->game->window);
-	}
-
+	map.draw(this->game->window);
+	player.draw(this->game->window);
 	return;
 }
 
 void GameLevel::update(sf::Clock& clock) {
-	if (start) {
 		/*Check Game Over*/
 		if (this->gameOver) {
 			this->game->changeState(new Info(this->game, "dead"));
@@ -105,7 +101,6 @@ void GameLevel::update(sf::Clock& clock) {
 			this->player.beenHit = false;
 		}
 		return;
-	}
 }
 
 void GameLevel::eventHandler() {
@@ -114,8 +109,7 @@ void GameLevel::eventHandler() {
 	while (this->game->window.pollEvent(event)) {
 		
 		switch (event.type) {
-
-			/*Window closed*/
+		/*Window closed*/
 		case sf::Event::Closed: {
 			game->window.close();
 			break;
@@ -123,39 +117,27 @@ void GameLevel::eventHandler() {
 
 		/*Key Pressed*/
 		case sf::Event::KeyPressed: {
-			if (event.key.code == sf::Keyboard::Y) {
-				this->start = true;
-				this->gui.codeDisplay.setString("");
-				break;
-			}
 			if (event.key.code == sf::Keyboard::Q) {
 				game->window.close();
 				break;
 			}
-			if (this->start) {
-
-				if (event.key.code == sf::Keyboard::B) {
-					this->game->goBackState();
-					break;
-				}
-
-
-				if (event.key.code == sf::Keyboard::W || event.key.code == sf::Keyboard::A ||
-					event.key.code == sf::Keyboard::S || event.key.code == sf::Keyboard::D) {
-					sf::Keyboard::Key k = event.key.code;
-					this->playerMove(k);
-				}
-				if (event.key.code == sf::Keyboard::Return) {
-					if (this->player.spells > 0) {
-						this->map.explode(this->player);
-						this->gui.update("spells", "Spells: " + std::to_string(this->player.spells));
-						this->game->audmgr.playSound("explode", this->game->SFX);
-
-					}
-				}
-
+			if (event.key.code == sf::Keyboard::B) {
+				this->game->goBackState();
+				break;
 			}
 			
+			if (event.key.code == sf::Keyboard::W || event.key.code == sf::Keyboard::A ||
+				event.key.code == sf::Keyboard::S || event.key.code == sf::Keyboard::D) {
+				sf::Keyboard::Key k = event.key.code;
+				this->playerMove(k);
+			}
+			if (event.key.code == sf::Keyboard::Return) {
+				if (this->player.spells > 0) {
+					this->map.explode(this->player);
+					this->gui.update("spells", "Spells: " + std::to_string(this->player.spells));
+					this->game->audmgr.playSound("explode", this->game->SFX);
+				}
+			}
 		}								
 		default:
 			break;
@@ -209,12 +191,6 @@ GameLevel::GameLevel(Game* game) {
 	noveltySearch = bd(generator);
 	std::vector<int> mapsUsed;
 	bool prevUsed;
-	if (noveltySearch) {
-		this->code = "CODE: A56B2";
-	}
-	else {
-		this->code = "CODE: F98T3";
-	}
 
 	for (int map = 1; map < 7; map++) {
 		prevUsed = true;
@@ -252,7 +228,6 @@ GameLevel::GameLevel(Game* game) {
 	map = Map(mapFiles["map1"], currentLevel, 15,15,32, game->tileAtlas, game, player, true);
 	mapList["map1"] = map;
 	this->gui.update("level", "Level: " + std::to_string(currentLevel));
-	this->gui.update("code", code);
 	this->gui.update("spells", "Spells: " + std::to_string(this->player.spells));
 
 }

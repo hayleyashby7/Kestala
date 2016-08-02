@@ -1,0 +1,12 @@
+You are Wryn, a brave sorcerer and treasure seeker.
+Having heard tales of vast riches, 
+you have decided to explore the great caves of Kestala.
+Armed only with your wits (and a couple of exploding spells) 
+you seek your fortune...
+...but beware what lies within!
+
+Controls
+W- Up	A- Left	
+S-Down	D-Right
+Enter - EXPLOSION!
+Q-Quit	B-Back to Menu

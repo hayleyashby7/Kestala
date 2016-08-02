@@ -1,0 +1,6 @@
+GAME OVER
+The terrors of the caves have claimed you!
+Better be more careful next time
+
+Press B to return to the menu
+Press Q to quit

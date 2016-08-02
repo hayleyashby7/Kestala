@@ -1,0 +1,8 @@
+WELL DONE!
+You have successfully explored the caves of Kestala
+and escaped with your life!
+However, you still ask yourself...
+..did you really get all the treasure? 
+
+Press B to return to the menu
+Press Q to quit
