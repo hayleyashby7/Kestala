@@ -1,21 +1,21 @@
 #include "map.hpp"
 
 
-void Map::loadMap(const std::string& filename,int id, unsigned int width, unsigned int height, 
+void Map::loadMap(const std::string& filename, int id, unsigned int width, unsigned int height,
 	std::map<std::string, Tile>& entityAtlas, Game* game, Player& player) {
 	this->id = id;
-	int totalSize = width * height;	
+	int totalSize = width * height;
 	std::ifstream input;
 	input.open(filename);
 	float currentX = 0;
 	float currentY = 0;
 
-	for (int i = 0; i <totalSize; i++)	
+	for (int i = 0; i <totalSize; i++)
 	{
 		currentX = float(i % width + 1);
 		if (i % height == 0) currentY++;
 
-		Cell cell(currentX, currentY);	
+		Cell cell(currentX, currentY);
 
 		char character;
 		input.get(character);
@@ -36,10 +36,10 @@ void Map::loadMap(const std::string& filename,int id, unsigned int width, unsign
 			this->gems++;
 			cell.cellContents.push_back(entityAtlas.at("floor"));
 			cell.cellContents.push_back(entityAtlas.at("gem"));
-			
+
 			break;
 
-		case '4': 
+		case '4':
 			//player
 			player.setPosition(sf::Vector2f(currentX * this->tileSize, currentY* this->tileSize));
 			startPos = sf::Vector2f(currentX * this->tileSize, currentY* this->tileSize);
@@ -49,13 +49,13 @@ void Map::loadMap(const std::string& filename,int id, unsigned int width, unsign
 			//exit
 			exitPos = sf::Vector2f(currentX * this->tileSize, currentY* this->tileSize);
 			cell.cellContents.push_back(entityAtlas.at("blockedexit"));
-			
+
 			break;
-		
+
 		default:
 			break;
 		}
-		
+
 		mapCells.push_back(cell);
 
 	}
@@ -66,16 +66,19 @@ void Map::loadMap(const std::string& filename,int id, unsigned int width, unsign
 
 void Map::enemyMove(Player &player) {
 	for (auto &enemy : this->enemies) {
-		sf::Vector2f newEnemyPos = enemy.movePosition(enemy.enemyDirection);
-		if (!checkCollision(newEnemyPos, enemy)) {
-			enemy.updatePos(newEnemyPos);
-			if (newEnemyPos == player.getPosition()) {
-				player.takeDamage();
+		if (enemy.active) {
+			sf::Vector2f newEnemyPos = enemy.movePosition(enemy.enemyDirection);
+			if (!checkCollision(newEnemyPos, enemy)) {
+				enemy.updatePos(newEnemyPos);
+				if (newEnemyPos == player.getPosition()) {
+					player.takeDamage();
+				}
+			}
+			else {
+				enemy.changeDirection();
 			}
 		}
-		else {
-			enemy.changeDirection();
-		}
+
 	}
 }
 
@@ -84,17 +87,17 @@ bool Map::checkCollision(sf::Vector2f position, Entity movingEntity) {
 	position.y = position.y / tileSize;
 
 	//check out of bounds
-	if (position.x <=0 || position.x > 15
+	if (position.x <= 0 || position.x > 15
 		|| position.y <= 0 || position.y > 15) {
 		return true;
 	}
-	
+
 	//check collisions within map
 	for (auto &cell : this->mapCells) {
-		if (cell.cellX == position.x && cell.cellY == position.y) {		
+		if (cell.cellX == position.x && cell.cellY == position.y) {
 			int currentGems = this->gems;
-			for (auto &content : cell.cellContents) {					
-				if (content.type == Entity::entityType::WALL) {						
+			for (auto &content : cell.cellContents) {
+				if (content.type == Entity::entityType::WALL) {
 					return true;
 				}
 				//player reaches exit
@@ -109,8 +112,8 @@ bool Map::checkCollision(sf::Vector2f position, Entity movingEntity) {
 				}
 				//player goes back level
 				if (movingEntity.type == Entity::entityType::PLAYER
-					&& content.type == Entity::entityType::START 
-					&& this->firstLevel == false) {					
+					&& content.type == Entity::entityType::START
+					&& this->firstLevel == false) {
 					leaveMap(this->prevLevel);
 				}
 
@@ -128,7 +131,7 @@ bool Map::checkCollision(sf::Vector2f position, Entity movingEntity) {
 									this->unlocked = true;
 								}
 							}
-						}						
+						}
 					}
 				}
 			}
@@ -140,9 +143,8 @@ bool Map::checkCollision(sf::Vector2f position, Entity movingEntity) {
 
 	//check if player hits enemy
 	if (movingEntity.type == Entity::entityType::PLAYER) {
-		
 		for (auto &enemy : this->enemies) {
-			if (enemy.getPosition() == movingEntity.getPosition()) {
+			if (enemy.getPosition() == movingEntity.getPosition() && enemy.active) {
 				movingEntity.takeDamage();
 			}
 		}
@@ -175,6 +177,7 @@ void Map::explode(Player& player) {
 	nearby.push_back(playerPos);
 	nearby.push_back(playerPos);
 	nearby.push_back(playerPos);
+	nearby.push_back(playerPos);
 	nearby[0].x += tileSize;
 	nearby[1].x -= tileSize;
 	nearby[2].y += tileSize;
@@ -184,11 +187,11 @@ void Map::explode(Player& player) {
 		for (auto& near : nearby) {
 			if (cell.getPosition() == near) {
 				bool changed = false;
-				for (auto &content : cell.cellContents) {					
-					switch (content.type){
+				for (auto &content : cell.cellContents) {
+					switch (content.type) {
 					case Entity::entityType::WALL:
 						content.type = Entity::entityType::FLOOR;
-						changed = true;						
+						changed = true;
 						break;
 					default:
 						break;
@@ -202,24 +205,35 @@ void Map::explode(Player& player) {
 		}
 	}
 
+	for (auto& enemy : enemies) {
+		for (auto& near : nearby) {
+			if (enemy.getPosition() == near) {
+				enemy.active = false;
+			}
+		}
+	}
+
 
 }
 
 void Map::draw(sf::RenderWindow& window) {
 
 	for (auto &cell : this->mapCells) {
-		for (auto &content : cell.cellContents){
+		for (auto &content : cell.cellContents) {
 			if (content.active) {
 				sf::Vector2f pos;
 				pos.x = cell.cellX * content.tileSize;
 				pos.y = cell.cellY * content.tileSize;
 				content.sprite.setPosition(pos);
 				content.draw(window);
-			}			
+			}
 		}
 	}
 	for (auto &enemy : this->enemies) {
-		enemy.draw(window);
-	}	
-	
+		if (enemy.active) {
+			enemy.draw(window);
+		}
+
+	}
+
 }

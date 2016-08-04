@@ -19,6 +19,7 @@ public:
 
 	Enemy(sf::Vector2f& initialPos, sf::Texture& texture) {
 		this->isSolid = true;
+		this->active = true;
 		this->type = entityType::ENEMY;
 		this->sprite.setOrigin(sf::Vector2f(0.0f, 0.0f));
 		this->sprite.setPosition(initialPos);

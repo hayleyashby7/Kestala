@@ -31,7 +31,7 @@ public:
 		this->type = entityType::PLAYER;
 		this->health = 100;
 		this->gems = 0;
-		this->spells = 2;
+		this->spells = 3;
 		this->beenHit = false;
 		this->sprite.setOrigin(sf::Vector2f(0.0f, 0.0f));
 		this->sprite.setPosition(initialPos);
