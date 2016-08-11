@@ -4,12 +4,14 @@
 #include <SFML\Audio.hpp>
 #include <string>
 #include <map>
+#include <queue>
 
 class AudioManager {
 private:
 
 	//Array of sounds used
 	std::map<std::string, sf::SoundBuffer> soundbuffs;
+	std::queue<std::string> soundQueue;
 
 public:
 	//SoundBuffer from file
@@ -18,7 +20,11 @@ public:
 	//id into a reference
 	sf::SoundBuffer& getRef(const std::string& soundbuffer);
 
-	void playSound(std::string bufferName, sf::Sound& sound);
+	//add sounds to queue
+	void addBufferToQueue(std::string bufferName);
+
+	//play sounds in queue
+	void playSound(sf::Sound& sound);
 
 	//Constructor
 	AudioManager() {

@@ -40,7 +40,6 @@ void Game::pushBackState(GameState* state) {
 
 void Game::popBackState(){
 	if (!states.empty()) {
-		states.back()->cleanUp();
 		states.pop_back();
 	}
 }
@@ -76,7 +75,6 @@ void Game::eventHandler() {
 void Game::cleanUp() {
 	//clean all states
 	while (!states.empty()) {
-		states.back()->cleanUp();
 		states.pop_back();
 	}
 }

@@ -19,7 +19,15 @@ sf::SoundBuffer& AudioManager::getRef(const std::string& soundbuffer) {
 	return this->soundbuffs.at(soundbuffer);
 }
 
-void AudioManager::playSound(std::string bufferName, sf::Sound& sound) {	
-	sound.setBuffer(getRef(bufferName));
-	sound.play();
+void AudioManager::addBufferToQueue(std::string bufferName) {
+	this->soundQueue.push(bufferName);
+}
+
+void AudioManager::playSound(sf::Sound& sound) {
+	while(!soundQueue.empty() || sound.Playing != 2) {
+		std::string bufferName = soundQueue.front();
+		sound.setBuffer(getRef(bufferName));
+		sound.play();
+		soundQueue.pop();
+	}	
 }

@@ -14,9 +14,6 @@ void MainMenu::init() {
 	this->game->bgMusic.play();	
 }
 
-void MainMenu::cleanUp() {}
-void MainMenu::pause() {}
-void MainMenu::resume() {}
 
 void MainMenu::draw(const float dt) {
 	this->game->window.setView(this->menuView);

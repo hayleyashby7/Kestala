@@ -11,12 +11,7 @@ void GameLevel::init() {
 	this->game->window.clear(sf::Color::Black);
 	this->game->background.setTexture(this->game->texmgr.getRef("background"));
 	this->game->window.draw(this->game->background);
-
-
 }
-void GameLevel::cleanUp(){}
-void GameLevel::pause(){}
-void GameLevel::resume(){}
 
 void GameLevel::draw(const float dt) {
 	this->game->window.clear(sf::Color::Black);	
@@ -95,11 +90,12 @@ void GameLevel::update(sf::Clock& clock) {
 			if (this->player.beenHit) {
 				this->gui.update("player", "Health: " + this->player.getHealth());
 				this->gui.update("gem", "Gems Gathered: " + this->player.getGems());
-				this->game->audmgr.playSound("playerhit", this->game->SFX);
+				this->game->audmgr.addBufferToQueue("playerhit");
 			}
 			gameOver = player.isDead();
 			this->player.beenHit = false;
 		}
+		this->game->audmgr.playSound(this->game->SFX);
 		return;
 }
 
@@ -136,7 +132,7 @@ void GameLevel::eventHandler() {
 				if (this->player.spells > 0) {
 					this->map.explode(this->player);
 					this->gui.update("spells", "Spells: " + std::to_string(this->player.spells));
-					this->game->audmgr.playSound("explode", this->game->SFX);
+					this->game->audmgr.addBufferToQueue("explode");
 				}
 			}
 		}								
@@ -157,7 +153,7 @@ void GameLevel::playerMove(sf::Keyboard::Key& dirKey) {
 	}
 	if (map.gems < mapGems) {
 		player.gems++;
-		this->game->audmgr.playSound("pickup", this->game->SFX);
+		this->game->audmgr.addBufferToQueue("pickup");
 		this->gui.update("gem", "Gems Gathered: " + this->player.getGems());
 	}
 
@@ -169,7 +165,7 @@ void GameLevel::playerMove(sf::Keyboard::Key& dirKey) {
 	gameOver = player.isDead();
 	this->player.beenHit = false;
 	if (this->map.unlocked && !this->map.doorOpened) {
-		this->game->audmgr.playSound("unlockdoor", this->game->SFX);
+		this->game->audmgr.addBufferToQueue("unlockdoor");
 		this->map.doorOpened = true;
 	}
 
@@ -185,47 +181,12 @@ GameLevel::GameLevel(Game* game) {
 	this->game->bgMusic.setLoop(true);
 	this->game->bgMusic.play();
 
-	std::random_device rd;
-	std::mt19937_64 generator(rd());
-	std::bernoulli_distribution bd(0.5);
-
-	std::uniform_int_distribution<> randomMap{ 1, 100 };
-	noveltySearch = bd(generator);
-	std::vector<int> mapsUsed;
-	bool prevUsed;
-
-	for (int map = 1; map < 7; map++) {
-		prevUsed = true;
-		std::string filename;		
-		int i = randomMap(generator);
-
-		while (prevUsed) {			
-			int test = 0;
-			for (auto& maps : mapsUsed) {
-				if (i == maps) {
-					test++;
-				}
-			}
-			if (test == 0) {
-				prevUsed = false;
-				mapsUsed.push_back(i);
-				break;
-			}
-			else {
-				i = randomMap(generator);
-			}
-		}
-
-		if (noveltySearch) {
-			filename = "assets/maps/NS/map" + std::to_string(i) + ".dat";
-		}
-		else {
-			filename = "assets/maps/FF/map" + std::to_string(i) + ".dat";
-		}
-			std::string mapName = "map" + std::to_string(map);
-			mapFiles[mapName] = filename;		
+	for (int map = 1; map <= maxLevel; map++) {
+		std::string filename;
+		std::string mapName = "map" + std::to_string(map);
+		filename = "assets/maps/" + mapName + ".dat";
+		mapFiles[mapName] = filename;
 	}
-	
 	currentLevel = 1;
 	map = Map(mapFiles["map1"], currentLevel, 15,15,32, game->tileAtlas, game, player, true);
 	mapList["map1"] = map;

@@ -12,11 +12,6 @@ public:
 	int type = 0;
 
 	virtual void init() = 0;
-	virtual void cleanUp() = 0;
-
-	virtual void pause() = 0;
-	virtual void resume() = 0;
-
 	virtual void draw(const float dt) = 0;
 	virtual void update(sf::Clock& clock) = 0;
 	virtual void eventHandler() = 0;

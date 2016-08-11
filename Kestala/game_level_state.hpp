@@ -37,9 +37,6 @@ public:
 	void playerMove(sf::Keyboard::Key& dirKey);
 	
 	virtual void init();
-	virtual void cleanUp();
-	virtual void pause();
-	virtual void resume();
 	virtual void draw(const float dt);
 	virtual void update(sf::Clock& clock);
 	virtual void eventHandler();
