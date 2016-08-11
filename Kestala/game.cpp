@@ -108,8 +108,6 @@ Game::Game(){
 	this->window.create(sf::VideoMode(750, 550), "Kestala", sf::Style::Titlebar | sf::Style::Close);
 	this->window.setFramerateLimit(60);
 	this->background.setTexture(this->texmgr.getRef("background"));
-	this->bgMusic.openFromFile("assets/sounds/mainmenu.wav");
-	this->bgMusic.setVolume(50);
 	this->SFX.setVolume(50);
 }
 

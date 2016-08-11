@@ -119,6 +119,7 @@ void GameLevel::eventHandler() {
 			}
 			if (event.key.code == sf::Keyboard::B) {
 				this->game->goBackState();
+				this->game->bgMusic.stop();
 				break;
 			}
 			

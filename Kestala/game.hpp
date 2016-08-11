@@ -37,6 +37,7 @@ public:
 
 	AudioManager audmgr;
 	sf::Music bgMusic;
+	sf::Music menuMusic;
 	sf::Sound SFX;
 
 	std::map<std::string, Tile> tileAtlas;

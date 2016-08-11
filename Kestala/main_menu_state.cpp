@@ -8,10 +8,13 @@ void MainMenu::init() {
 	this->game->window.clear(sf::Color::Black);
 	this->game->background.setTexture(this->game->texmgr.getRef("background"));
 	this->game->window.draw(this->game->background);
-	this->game->bgMusic.openFromFile("assets/sounds/mainmenu.wav");
-	this->game->bgMusic.setVolume(50);
-	this->game->bgMusic.setLoop(true);
-	this->game->bgMusic.play();	
+	if (this->game->menuMusic.getStatus() !=2) {
+		this->game->menuMusic.openFromFile("assets/sounds/mainmenu.wav");
+		this->game->menuMusic.setVolume(50);
+		this->game->menuMusic.setLoop(true);
+		this->game->menuMusic.play();
+	}
+		
 }
 
 
@@ -59,6 +62,7 @@ void MainMenu::eventHandler() {
 				{
 				case 1:
 					this->game->changeState(new GameLevel(this->game));
+					this->game->menuMusic.stop();
 					break;
 				case 2:
 					this->game->changeState(new Info(this->game, "info"));
@@ -86,5 +90,5 @@ MainMenu::MainMenu(Game* game) {
 	this->menuView.setSize(pos);
 	pos *= 0.5f;
 	this->menuView.setCenter(pos);
-	this->game->bgMusic.play();
+	this->game->menuMusic.play();
 }

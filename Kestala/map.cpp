@@ -71,12 +71,13 @@ void Map::enemyMove(Player &player, Game* game) {
 			game->animgr.update(enemy.sprite);
 			if (!checkCollision(newEnemyPos, enemy)) {
 				enemy.updatePos(newEnemyPos);
-				if (newEnemyPos == player.getPosition()) {
-					player.takeDamage();
-				}
+				
 			}
 			else {
 				enemy.changeDirection();
+			}
+			if (enemy.getPosition() == player.getPosition()) {
+				player.takeDamage();
 			}
 		}
 
