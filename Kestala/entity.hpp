@@ -9,7 +9,7 @@
 class Entity {
 
 public:
-	sf::FloatRect entRect;
+	sf::IntRect rectSource;
 	sf::Sprite sprite;
 	bool active = true;
 

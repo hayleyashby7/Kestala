@@ -90,8 +90,8 @@ void GameLevel::update(sf::Clock& clock) {
 
 		/*Enemy movement*/
 		float dt = clock.getElapsedTime().asSeconds();
-		if (dt > this->game->gameSpeed) {
-			this->map.enemyMove(player);
+		if (dt > this->game->gameSpeed) {			
+			this->map.enemyMove(player, this->game);			
 			if (this->player.beenHit) {
 				this->gui.update("player", "Health: " + this->player.getHealth());
 				this->gui.update("gem", "Gems Gathered: " + this->player.getGems());
@@ -128,8 +128,9 @@ void GameLevel::eventHandler() {
 			
 			if (event.key.code == sf::Keyboard::W || event.key.code == sf::Keyboard::A ||
 				event.key.code == sf::Keyboard::S || event.key.code == sf::Keyboard::D) {
-				sf::Keyboard::Key k = event.key.code;
+				sf::Keyboard::Key k = event.key.code;				
 				this->playerMove(k);
+				this->game->animgr.update(player.sprite);
 			}
 			if (event.key.code == sf::Keyboard::Return) {
 				if (this->player.spells > 0) {
@@ -150,6 +151,7 @@ void GameLevel::eventHandler() {
 void GameLevel::playerMove(sf::Keyboard::Key& dirKey) {
 	int mapGems = map.gems;
 	sf::Vector2f newPos = player.movePosition(dirKey);
+	this->game->animgr.changeDirection(dirKey, player.sprite);
 	if (!map.checkCollision(newPos, player)) {
 		player.updatePos(newPos);
 	}
@@ -174,7 +176,7 @@ void GameLevel::playerMove(sf::Keyboard::Key& dirKey) {
 }
 
 GameLevel::GameLevel(Game* game) {
-	player = Player(sf::Vector2f(0, 0), game->texmgr.getRef("player"));
+	player = Player(sf::Vector2f(0, 0), game->texmgr.getRef("spritesheet"), game->animgr.firstFrame("player"));
 	this->game = game;
 	this->start = false;
 	this->player = player;

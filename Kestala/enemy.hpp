@@ -17,13 +17,14 @@ public:
 
 	Enemy() {}
 
-	Enemy(sf::Vector2f& initialPos, sf::Texture& texture) {
+	Enemy(sf::Vector2f& initialPos, sf::Texture& texture, sf::IntRect texturePosition) {
 		this->isSolid = true;
 		this->active = true;
 		this->type = entityType::ENEMY;
 		this->sprite.setOrigin(sf::Vector2f(0.0f, 0.0f));
 		this->sprite.setPosition(initialPos);
 		this->sprite.setTexture(texture);
+		this->sprite.setTextureRect(texturePosition);
 		randomDirection();
 	}
 

@@ -16,13 +16,13 @@ public:
 
 	Tile(){}
 
-	Tile(const unsigned int tileSize, sf::Texture& texture, bool isSolid, entityType type){
+	Tile(const unsigned int tileSize, sf::Texture& texture, sf::IntRect texturePosition, bool isSolid, entityType type){
 		this->type = type;
 		this->isSolid = isSolid;
 		this->tileSize = tileSize;
 		this->sprite.setOrigin(sf::Vector2f(0.0f, 0.0f));
 		this->sprite.setTexture(texture);
-		
+		this->sprite.setTextureRect(texturePosition);		
 	}
 
 

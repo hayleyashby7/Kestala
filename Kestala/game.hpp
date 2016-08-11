@@ -9,6 +9,7 @@
 
 #include "texture_manager.hpp"
 #include "audio_manager.hpp"
+#include "animation_manager.hpp"
 
 #include "tile.hpp"
 #include "entity.hpp"
@@ -31,6 +32,7 @@ public:
 
 	sf::RenderWindow window;
 	TextureManager texmgr;
+	AnimationManager animgr;
 	sf::Sprite background;
 
 	AudioManager audmgr;
@@ -38,7 +40,6 @@ public:
 	sf::Sound SFX;
 
 	std::map<std::string, Tile> tileAtlas;
-
 
 	void pushBackState(GameState* state);
 	void popBackState();

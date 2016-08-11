@@ -27,7 +27,7 @@ void Map::loadMap(const std::string& filename, int id, unsigned int width, unsig
 			cell.cellContents.push_back(entityAtlas.at("wall"));
 			break;
 		case '2': {
-			Enemy enemy = Enemy(sf::Vector2f(currentX * this->tileSize, currentY* this->tileSize), game->texmgr.getRef("enemy"));
+			Enemy enemy = Enemy(sf::Vector2f(currentX * this->tileSize, currentY* this->tileSize), game->texmgr.getRef("spritesheet"), game->animgr.firstFrame("enemy"));
 			enemies.push_back(enemy);
 			cell.cellContents.push_back(entityAtlas.at("floor"));
 		}
@@ -64,10 +64,11 @@ void Map::loadMap(const std::string& filename, int id, unsigned int width, unsig
 	return;
 }
 
-void Map::enemyMove(Player &player) {
+void Map::enemyMove(Player &player, Game* game) {
 	for (auto &enemy : this->enemies) {
 		if (enemy.active) {
 			sf::Vector2f newEnemyPos = enemy.movePosition(enemy.enemyDirection);
+			game->animgr.update(enemy.sprite);
 			if (!checkCollision(newEnemyPos, enemy)) {
 				enemy.updatePos(newEnemyPos);
 				if (newEnemyPos == player.getPosition()) {
@@ -81,6 +82,7 @@ void Map::enemyMove(Player &player) {
 
 	}
 }
+
 
 bool Map::checkCollision(sf::Vector2f position, Entity movingEntity) {
 	position.x = position.x / tileSize;

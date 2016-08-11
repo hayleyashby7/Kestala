@@ -10,24 +10,19 @@
 
 
 void Game::loadTextures() {
+	texmgr.loadTexture("spritesheet", "assets/art/spritesheet.png");
 	texmgr.loadTexture("background", "assets/art/background.png");
-	texmgr.loadTexture("floor", "assets/art/floor.png");
-	texmgr.loadTexture("wall", "assets/art/wall.png");
-	texmgr.loadTexture("player", "assets/art/player.png");
-	texmgr.loadTexture("enemy", "assets/art/enemy.png");
-	texmgr.loadTexture("exit", "assets/art/exit.png");
-	texmgr.loadTexture("blockedexit", "assets/art/blockedExit.png");
-	texmgr.loadTexture("start", "assets/art/start.png");
-	texmgr.loadTexture("gem", "assets/art/gem.png");
+	
 }
 
 void Game::loadTiles() {
-	this->tileAtlas["floor"] = Tile(this->tileHeight, texmgr.getRef("floor"), false, Entity::entityType::FLOOR);
-	this->tileAtlas["wall"] = Tile(this->tileHeight, texmgr.getRef("wall"), true, Entity::entityType::WALL);
-	this->tileAtlas["exit"] = Tile(this->tileHeight, texmgr.getRef("exit"), false, Entity::entityType::EXIT);
-	this->tileAtlas["blockedexit"] = Tile(this->tileHeight, texmgr.getRef("blockedexit"), false, Entity::entityType::EXIT);
-	this->tileAtlas["start"] = Tile(this->tileHeight, texmgr.getRef("start"), false, Entity::entityType::START);
-	this->tileAtlas["gem"] = Tile(this->tileHeight, texmgr.getRef("gem"), false, Entity::entityType::PICKUP);
+	sf::Texture& spriteSheet(texmgr.getRef("spritesheet"));
+	this->tileAtlas["floor"] = Tile(this->tileHeight, spriteSheet, animgr.firstFrame("floor"), false, Entity::entityType::FLOOR);
+	this->tileAtlas["wall"] = Tile(this->tileHeight, spriteSheet, animgr.firstFrame("wall"), true, Entity::entityType::WALL);
+	this->tileAtlas["exit"] = Tile(this->tileHeight, spriteSheet, animgr.firstFrame("exit"), false, Entity::entityType::EXIT);
+	this->tileAtlas["blockedexit"] = Tile(this->tileHeight, spriteSheet, animgr.firstFrame("blockedExit"), false, Entity::entityType::EXIT);
+	this->tileAtlas["start"] = Tile(this->tileHeight, spriteSheet, animgr.firstFrame("start"), false, Entity::entityType::START);
+	this->tileAtlas["gem"] = Tile(this->tileHeight, spriteSheet, animgr.firstFrame("gem"), false, Entity::entityType::PICKUP);
 }
 
 void Game::loadAudio() {

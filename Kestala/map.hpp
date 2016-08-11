@@ -44,7 +44,7 @@ public:
 		std::map<std::string, Tile>& enemyAtlas, Game* game, Player& player);
 
 	
-	void enemyMove(Player& player);
+	void enemyMove(Player& player, Game* game);
 	bool checkCollision(sf::Vector2f position, Entity movingEntity);
 
 	void leaveMap(bool& change);
