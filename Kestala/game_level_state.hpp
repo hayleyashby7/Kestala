@@ -22,9 +22,12 @@ private:
 	std::map<std::string, std::string> mapFiles;
 	std::map<std::string, Map> mapList;
 	std::vector<Map>prevLevels;
+
 	bool start;
 	int currentLevel;
 	int maxLevel = 2;
+	sf::Clock keyPress;
+	sf::Keyboard::Key lastPressed;
 
 
 public:

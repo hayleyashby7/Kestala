@@ -125,10 +125,13 @@ void GameLevel::eventHandler() {
 			
 			if (event.key.code == sf::Keyboard::W || event.key.code == sf::Keyboard::A ||
 				event.key.code == sf::Keyboard::S || event.key.code == sf::Keyboard::D) {
-				sf::Keyboard::Key k = event.key.code;				
-				this->playerMove(k);				
-				this->game->animgr.update(player.sprite);
-			
+				sf::Keyboard::Key k = event.key.code;
+				if (keyPress.getElapsedTime().asSeconds() > (this->game->gameSpeed/2) || k != lastPressed) {					
+					this->playerMove(k);
+					this->game->animgr.update(player.sprite);
+					keyPress.restart();
+					lastPressed = k;
+				}			
 			}
 			if (event.key.code == sf::Keyboard::Return) {
 				if (this->player.spells > 0) {
