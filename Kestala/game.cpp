@@ -19,9 +19,9 @@ void Game::loadTiles() {
 	sf::Texture& spriteSheet(texmgr.getRef("spritesheet"));
 	this->tileAtlas["floor"] = Tile(this->tileHeight, spriteSheet, animgr.firstFrame("floor"), false, Entity::entityType::FLOOR);
 	this->tileAtlas["wall"] = Tile(this->tileHeight, spriteSheet, animgr.firstFrame("wall"), true, Entity::entityType::WALL);
-	this->tileAtlas["exit"] = Tile(this->tileHeight, spriteSheet, animgr.firstFrame("exit"), false, Entity::entityType::EXIT);
+	this->tileAtlas["exit"] = Tile(this->tileHeight, spriteSheet, animgr.firstFrame("opendoor"), false, Entity::entityType::EXIT);
 	this->tileAtlas["blockedexit"] = Tile(this->tileHeight, spriteSheet, animgr.firstFrame("blockedExit"), false, Entity::entityType::EXIT);
-	this->tileAtlas["start"] = Tile(this->tileHeight, spriteSheet, animgr.firstFrame("start"), false, Entity::entityType::START);
+	this->tileAtlas["start"] = Tile(this->tileHeight, spriteSheet, animgr.firstFrame("opendoor"), false, Entity::entityType::START);
 	this->tileAtlas["gem"] = Tile(this->tileHeight, spriteSheet, animgr.firstFrame("gem"), false, Entity::entityType::PICKUP);
 }
 
@@ -105,7 +105,7 @@ Game::Game(){
 	this->loadTextures();
 	this->loadTiles();
 	this->loadAudio();
-	this->window.create(sf::VideoMode(750, 550), "Kestala", sf::Style::Titlebar | sf::Style::Close);
+	this->window.create(sf::VideoMode(704, 480), "Kestala", sf::Style::Titlebar | sf::Style::Close);
 	this->window.setFramerateLimit(60);
 	this->background.setTexture(this->texmgr.getRef("background"));
 	this->SFX.setVolume(50);

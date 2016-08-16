@@ -12,7 +12,7 @@ Gui::Gui() {
 	guiText["player"].setString("Health: 100");
 	guiText["spells"].setString("Spells: ");
 
-	guiStart.x = 557;
+	guiStart.x = 500;
 	guiStart.y = 25;
 
 	int i = 0;

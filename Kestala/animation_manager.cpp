@@ -47,9 +47,8 @@ AnimationManager::AnimationManager() {
 	this->startingFrames["player"] = sf::IntRect(0, 32, 32, 32);
 	this->startingFrames["enemy"] = sf::IntRect(0, 128, 32, 32);
 	this->startingFrames["blockedExit"] = sf::IntRect(0, 160, 32, 32);
-	this->startingFrames["exit"] = sf::IntRect(32, 160, 32, 32);
+	this->startingFrames["opendoor"] = sf::IntRect(32, 160, 32, 32);
 	this->startingFrames["wall"] = sf::IntRect(0, 192, 32, 32);
 	this->startingFrames["floor"] = sf::IntRect(32, 192, 32, 32);
-	this->startingFrames["start"] = sf::IntRect(0, 224, 32, 32);
 	this->startingFrames["gem"] = sf::IntRect(32, 224, 32, 32);
 }

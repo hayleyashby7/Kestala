@@ -20,15 +20,24 @@ void Map::loadMap(const std::string& filename, int id, unsigned int width, unsig
 		char character;
 		input.get(character);
 		switch (character) {
-		case '0':
+		case 'F':
 			//floor
 			cell.cellContents.push_back(entityAtlas.at("floor"));
 			break;
-		case '1':
+		case 'W':
 			//wall
 			cell.cellContents.push_back(entityAtlas.at("wall"));
 			break;
-		case '2': {
+		case 'E':
+			//exit
+			exitPos = sf::Vector2f(currentX * this->tileSize, currentY* this->tileSize);
+			cell.cellContents.push_back(entityAtlas.at("blockedexit"));
+			break;
+		case 'L':
+			//locked passage
+			cell.cellContents.push_back(entityAtlas.at("wall"));
+			break;
+		case 'e': {
 			//enemy
 			Enemy enemy = Enemy(sf::Vector2f(currentX * this->tileSize, currentY* this->tileSize), game->texmgr.getRef("spritesheet"), game->animgr.firstFrame("enemy"));
 			enemy.setX(currentX);
@@ -37,14 +46,7 @@ void Map::loadMap(const std::string& filename, int id, unsigned int width, unsig
 			cell.cellContents.push_back(entityAtlas.at("floor"));
 			break;
 		}
-		case '3':
-			//pickup
-			this->gems++;
-			cell.cellContents.push_back(entityAtlas.at("floor"));
-			cell.cellContents.push_back(entityAtlas.at("gem"));
-			break;
-
-		case '4':
+		case 'P':
 			//player
 			player.setPosition(sf::Vector2f(currentX * this->tileSize, currentY* this->tileSize));
 			player.setX(currentX);
@@ -53,19 +55,29 @@ void Map::loadMap(const std::string& filename, int id, unsigned int width, unsig
 			cell.cellContents.push_back(entityAtlas.at("start"));
 			break;
 
-		case '5':
-			//exit
-			exitPos = sf::Vector2f(currentX * this->tileSize, currentY* this->tileSize);
-			cell.cellContents.push_back(entityAtlas.at("blockedexit"));
-			break;
+		case 't':
+			//minor treasure
+			cell.cellContents.push_back(entityAtlas.at("floor"));
 
-		case '6':
-			//special gems
+			break;
+		case 'T':
+			//main treasure
 			cell.cellContents.push_back(entityAtlas.at("floor"));
 			break;
 
-		case '7':
-			//main treasure
+		case 'g':
+			//spell gems
+			this->gems++;
+			cell.cellContents.push_back(entityAtlas.at("floor"));
+			cell.cellContents.push_back(entityAtlas.at("gem"));
+			break;
+		case 'G':
+			//spell gem drop point
+			cell.cellContents.push_back(entityAtlas.at("floor"));
+			break;
+
+		case 'k':
+			//key
 			cell.cellContents.push_back(entityAtlas.at("floor"));
 			break;
 		default:

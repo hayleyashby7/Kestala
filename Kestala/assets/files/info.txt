@@ -1,8 +1,8 @@
-You are Wryn, a brave sorcerer and treasure seeker.
-Having heard tales of vast riches, 
-you have decided to explore the great caves of Kestala.
-Armed only with your wits (and a couple of exploding spells) 
-you seek your fortune...
+You are Wryn, a brave sorcerer-in-training.
+Armed with only your trusty explosion spell,
+you seek "Kestala's Grimoire",
+a long-lost spellbook of great power.
+Determined you bravely explore the haunted caves of Kestala,
 ...but beware what lies within!
 
 Controls
