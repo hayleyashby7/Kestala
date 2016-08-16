@@ -11,9 +11,12 @@ public:
 	//enemy movement
 	
 	enum direction {up = 1, down, left, right} enemyDirection;
-	sf::Vector2f movePosition(direction dir);
+	int x, y;
+
 	sf::Vector2f changeDirection();
 	void randomDirection();
+	void setX(int x);
+	void setY(int y);
 
 	Enemy() {}
 

@@ -28,6 +28,12 @@ void Player::setPosition(sf::Vector2f position) {
 	this->sprite.setPosition(position);
 	return;
 }
+void Player::setX(int x) {
+	this->x = x;
+}
+void Player::setY(int y) {
+	this->y = y;
+}
 
 void Player::takeDamage() {
 	if (gems > 0) {

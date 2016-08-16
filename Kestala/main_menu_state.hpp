@@ -12,8 +12,6 @@ private:
 	MenuGui gui;
 
 public:
-	int type = 1;
-
 	virtual void init();
 	virtual void draw(const float dt);
 	virtual void update(sf::Clock& clock);

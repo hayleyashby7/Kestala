@@ -91,7 +91,7 @@ void Game::gameLoop(){
 		this->window.clear(sf::Color::Black);
 		this->draw(dt);
 		this->window.display();
-		if (dt > 0.25f) clock.restart();
+		if (dt > this->gameSpeed) clock.restart();
 	
 	}
 }

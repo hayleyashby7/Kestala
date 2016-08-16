@@ -7,12 +7,15 @@
 
 
 class Player : public Entity {
-
 public:
+	int x, y;
 	//player movement
-	int moveSpeed;
+	float moveSpeed;
+	float lastMoveTime;
 	sf::Vector2f movePosition(sf::Keyboard::Key& dirKey);
 	void setPosition(sf::Vector2f position);
+	void setX(int x);
+	void setY(int y);
 
 	bool beenHit;
 	int health;
@@ -32,6 +35,7 @@ public:
 		this->health = 100;
 		this->gems = 0;
 		this->spells = 3;
+		this->moveSpeed = 0.25;
 		this->beenHit = false;
 		this->sprite.setOrigin(sf::Vector2f(0.0f, 0.0f));
 		this->sprite.setPosition(initialPos);

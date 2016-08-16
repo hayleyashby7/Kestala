@@ -2,6 +2,8 @@
 #define MAP_HPP
 
 #include <SFML\Graphics.hpp>
+#include <boost\heap\fibonacci_heap.hpp>
+#include <boost\graph\astar_search.hpp>
 #include <string>
 #include <map>
 #include <vector>
@@ -43,7 +45,10 @@ public:
 	void loadMap(const std::string& filename, int id, unsigned int width, unsigned int height,
 		std::map<std::string, Tile>& enemyAtlas, Game* game, Player& player);
 
-	
+	Cell* getCell(sf::Vector2f position);
+	void distanceCalculation(Player& player);
+	void resetCellScores();
+	sf::Vector2f enemyPathFinder(Enemy& enemy, Player& player);
 	void enemyMove(Player& player, Game* game);
 	bool checkCollision(sf::Vector2f position, Entity movingEntity);
 

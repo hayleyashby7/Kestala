@@ -22,14 +22,12 @@ private:
 	std::map<std::string, std::string> mapFiles;
 	std::map<std::string, Map> mapList;
 	std::vector<Map>prevLevels;
-	bool noveltySearch;
 	bool start;
 	int currentLevel;
-	int maxLevel = 6;
+	int maxLevel = 2;
 
 
 public:
-	int type = 2;
 	Player player;
 	bool gameOver;
 	bool gameWon;

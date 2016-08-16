@@ -12,86 +12,240 @@ void Map::loadMap(const std::string& filename, int id, unsigned int width, unsig
 
 	for (int i = 0; i <totalSize; i++)
 	{
-		currentX = float(i % width + 1);
-		if (i % height == 0) currentY++;
+		currentX = float(i % width);
+		if (i >0 && i % height == 0) currentY++;
 
-		Cell cell(currentX, currentY);
-
+		Cell cell(currentX, currentY, i);
+		
 		char character;
 		input.get(character);
 		switch (character) {
 		case '0':
+			//floor
 			cell.cellContents.push_back(entityAtlas.at("floor"));
 			break;
 		case '1':
+			//wall
 			cell.cellContents.push_back(entityAtlas.at("wall"));
 			break;
 		case '2': {
+			//enemy
 			Enemy enemy = Enemy(sf::Vector2f(currentX * this->tileSize, currentY* this->tileSize), game->texmgr.getRef("spritesheet"), game->animgr.firstFrame("enemy"));
+			enemy.setX(currentX);
+			enemy.setY(currentY);
 			enemies.push_back(enemy);
 			cell.cellContents.push_back(entityAtlas.at("floor"));
+			break;
 		}
 		case '3':
 			//pickup
 			this->gems++;
 			cell.cellContents.push_back(entityAtlas.at("floor"));
 			cell.cellContents.push_back(entityAtlas.at("gem"));
-
 			break;
 
 		case '4':
 			//player
 			player.setPosition(sf::Vector2f(currentX * this->tileSize, currentY* this->tileSize));
+			player.setX(currentX);
+			player.setY(currentY);
 			startPos = sf::Vector2f(currentX * this->tileSize, currentY* this->tileSize);
 			cell.cellContents.push_back(entityAtlas.at("start"));
 			break;
+
 		case '5':
 			//exit
 			exitPos = sf::Vector2f(currentX * this->tileSize, currentY* this->tileSize);
 			cell.cellContents.push_back(entityAtlas.at("blockedexit"));
-
 			break;
 
+		case '6':
+			//special gems
+			cell.cellContents.push_back(entityAtlas.at("floor"));
+			break;
+
+		case '7':
+			//main treasure
+			cell.cellContents.push_back(entityAtlas.at("floor"));
+			break;
 		default:
 			break;
 		}
-
 		mapCells.push_back(cell);
-
 	}
 	this->totalGems = this->gems;
 	input.close();
 	return;
 }
 
+Cell* Map::getCell(sf::Vector2f position) {
+	int y = position.y / tileSize;
+	int x = position.x / tileSize;
+	int i = (y * 15) + x;
+	return &this->mapCells[i];
+}
+
+void Map::distanceCalculation(Player& player) {
+	for (auto& cell : this->mapCells) {
+		int dist = 0;
+		dist += ((abs(cell.getPosition().y - player.getPosition().y))/tileSize);
+		dist += ((abs(cell.getPosition().x - player.getPosition().x))/tileSize);
+		cell.setDistance(dist);
+	}	
+}
+
 void Map::enemyMove(Player &player, Game* game) {
+	distanceCalculation(player);
 	for (auto &enemy : this->enemies) {
 		if (enemy.active) {
-			sf::Vector2f newEnemyPos = enemy.movePosition(enemy.enemyDirection);
-			game->animgr.update(enemy.sprite);
+			sf::Vector2f newEnemyPos = enemyPathFinder(enemy, player);			
 			if (!checkCollision(newEnemyPos, enemy)) {
 				enemy.updatePos(newEnemyPos);
-				
-			}
-			else {
-				enemy.changeDirection();
+				enemy.setX(newEnemyPos.x /tileSize);
+				enemy.setY(newEnemyPos.y/tileSize);
 			}
 			if (enemy.getPosition() == player.getPosition()) {
 				player.takeDamage();
 			}
+			game->animgr.update(enemy.sprite);
 		}
 
 	}
 }
 
+struct lowestFScore {
+	bool operator()(const Cell* cell1, const Cell* cell2) const {
+		if (cell1->fScore == cell2->fScore) {
+			return cell1->positionScore > cell2->positionScore;
+		}
+		else {
+			return cell1->fScore > cell2->fScore;
+		}		
+	}
+};
+
+void Map::resetCellScores() {
+	for (auto& cell : this->mapCells) {
+		cell.setCost(0);
+		cell.setfScore(0);
+		cell.setParent(NULL);
+		cell.openList = false;
+		cell.closedList = false;
+	}
+}
+
+sf::Vector2f Map::enemyPathFinder(Enemy& enemy, Player& player) {
+	boost::heap::fibonacci_heap<Cell*, boost::heap::compare<lowestFScore>> openList;
+	std::vector<Cell*> closedList;
+	std::vector <sf::Vector2f> path;
+
+	//start
+	resetCellScores();
+	sf::Vector2f startPosition = enemy.getPosition();
+	Cell* startCell = getCell(enemy.getPosition());
+	Cell* endCell = getCell(player.getPosition());
+	int f = startCell->distance;
+	startCell->setCost(0);	
+	startCell->setfScore(f);
+	startCell->setParent(startCell);
+	openList.push(startCell);
+	startCell->openList = true;
+
+	bool finished = false;
+	while (!finished) {
+		if (openList.empty()) {
+			finished = true;
+			return startPosition;
+			break;
+		}
+		//check cell with lowest f score
+		Cell* currentCell = openList.top();
+		if (currentCell->getPosition() == endCell->getPosition()) {
+			while (currentCell->parent != startCell) {
+				path.push_back(currentCell->getPosition());
+				currentCell = currentCell->parent;
+			}
+			finished = true;
+			return currentCell->getPosition();
+		}
+		openList.pop();
+		currentCell->openList = false;
+		closedList.push_back(currentCell);
+		currentCell->closedList = true;
+
+		//add children if passable
+		sf::Vector2f currentPos = currentCell->getPosition();
+		std::vector<Cell*> children;
+
+		if (((currentPos.y / tileSize) + 1) <= 14) {
+			sf::Vector2f newPos = currentPos;
+			newPos.y += tileSize;
+			Cell* South = getCell(newPos);
+			for (auto &content : South->cellContents) {
+				if (content.type != Entity::entityType::WALL) {
+					children.push_back(South);
+				}
+			}
+		}
+		if (((currentPos.y / tileSize) - 1) >= 0) {
+			sf::Vector2f newPos = currentPos;
+			newPos.y -= tileSize;
+			Cell* North = getCell(newPos);
+			for (auto &content : North->cellContents) {
+				if (content.type != Entity::entityType::WALL) {
+					children.push_back(North);
+				}
+			}
+		}
+		if (((currentPos.x / tileSize) + 1) <= 14) {
+			sf::Vector2f newPos = currentPos;
+			newPos.x += tileSize;
+			Cell* East = getCell(newPos);
+			for (auto &content : East->cellContents) {
+				if (content.type != Entity::entityType::WALL) {
+					children.push_back(East);
+				}
+			}
+		}
+
+		if (((currentPos.x / tileSize) - 1) >= 0) {
+			sf::Vector2f newPos = currentPos;
+			newPos.x -= tileSize;
+			Cell* West = getCell(newPos);
+			for (auto &content : West->cellContents) {
+				if (content.type != Entity::entityType::WALL) {
+					children.push_back(West);
+				}
+			}
+		}
+				
+		for (auto& child : children) {
+			if (!child->closedList) {
+				child->setParent(currentCell);
+				child->setCost(child->parent->cost + 1);
+				child->setfScore(child->cost + child->distance);
+				if (!child->openList) {
+					openList.push(child);
+					child->openList = true;
+				}
+				else if (child->openList) {
+					if ((currentCell->cost + 1) < child->cost) {								
+						child->setParent(currentCell);
+						openList.push(child);
+					}
+				}			
+			}
+		}
+	}
+}
 
 bool Map::checkCollision(sf::Vector2f position, Entity movingEntity) {
 	position.x = position.x / tileSize;
 	position.y = position.y / tileSize;
 
 	//check out of bounds
-	if (position.x <= 0 || position.x > 15
-		|| position.y <= 0 || position.y > 15) {
+	if (position.x < 0 || position.x >=15
+		|| position.y < 0 || position.y >=15) {
 		return true;
 	}
 

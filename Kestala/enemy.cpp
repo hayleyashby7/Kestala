@@ -2,29 +2,8 @@
 
 #include "enemy.hpp"
 
-
-sf::Vector2f Enemy::movePosition(direction dir){
-	sf::Vector2f newPos = this->getPosition();
-	switch (dir) {
-	case up:
-		newPos.y -= tileSize;
-		break;
-	case left:
-		newPos.x -= tileSize;
-		break;
-	case down:
-		newPos.y += tileSize;
-		break;
-	case right:
-		newPos.x += tileSize;
-		break;
-	}
-	return newPos;
-}
-
 sf::Vector2f Enemy::changeDirection() {
 	sf::Vector2f newPos = this->getPosition();
-
 	switch (this->enemyDirection) {
 	case up:
 		enemyDirection = down;
@@ -44,6 +23,13 @@ sf::Vector2f Enemy::changeDirection() {
 		break;
 	}
 	return newPos;
+}
+
+void Enemy::setX(int x) {
+	this->x = x;
+}
+void Enemy::setY(int y) {
+	this->y = y;
 }
 
 void Enemy::randomDirection() {

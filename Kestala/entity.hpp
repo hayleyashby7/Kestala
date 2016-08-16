@@ -12,12 +12,10 @@ public:
 	sf::IntRect rectSource;
 	sf::Sprite sprite;
 	bool active = true;
-
 	int tileSize = 32;
 	
 
 	enum class entityType {FLOOR = 0, WALL, ENEMY, PLAYER, PICKUP, EXIT, START } type;
-
 	bool isSolid;
 
 	virtual void draw(sf::RenderWindow& window) {
@@ -29,8 +27,7 @@ public:
 	}
 
 	virtual sf::Vector2f getPosition() {
-		sf::Vector2f position = this->sprite.getPosition();
-		return position;
+		return this->sprite.getPosition();
 	}
 	virtual void takeDamage() {};
 
