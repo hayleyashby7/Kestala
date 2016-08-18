@@ -52,6 +52,7 @@ void AnimationManager::changeDirection(sf::Keyboard::Key& direction, sf::Sprite&
 AnimationManager::AnimationManager() {
 	this->startingFrames["player"] = sf::IntRect(64, 0, 32, 32);
 	this->startingFrames["enemy"] = sf::IntRect(0, 64, 32, 32);
+	this->startingFrames["specialenemy"] = sf::IntRect(0, 256, 32, 32);
 	this->startingFrames["blockeddoor"] = sf::IntRect(64, 64, 32, 32);
 	this->startingFrames["opendoor"] = sf::IntRect(96, 64, 32, 32);
 	this->startingFrames["wall"] = sf::IntRect(0, 96, 32, 32);

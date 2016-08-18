@@ -17,12 +17,15 @@ void GameLevel::draw(const float dt) {
 	this->game->window.clear(sf::Color::Black);	
 	this->game->window.draw(this->game->background);
 	gui.draw(this->game->window);
-	map.draw(this->game->window);
-	player.draw(this->game->window);
+	if (start) {
+		map.draw(this->game->window);
+		player.draw(this->game->window);
+	}
 	return;
 }
 
 void GameLevel::update(sf::Clock& clock) {
+	if (start) {
 		/*Check Game Over*/
 		if (this->gameOver) {
 			this->game->changeState(new Info(this->game, "dead"));
@@ -85,7 +88,7 @@ void GameLevel::update(sf::Clock& clock) {
 		/*Enemy movement*/
 		float dt = clock.getElapsedTime().asSeconds();
 		if (dt > this->game->gameSpeed) {
-			this->map.enemyMove(player, this->game);			
+			this->map.enemyMove(player, this->game);
 			if (this->player.beenHit) {
 				this->game->audmgr.addBufferToQueue("playerhit");
 			}
@@ -97,10 +100,11 @@ void GameLevel::update(sf::Clock& clock) {
 		this->gui.update("gem", "Gems Gathered: " + this->player.getGems());
 		this->gui.update("gold", "Gold Collected: " + this->player.getGold());
 		if (this->map.clueFound) {
-			this->gui.update("clue", this->map.clueText());
+			this->gui.update("t_clue", this->map.clueText());
 		}
 		this->game->audmgr.playSound(this->game->SFX);
 		return;
+	}
 }
 
 void GameLevel::eventHandler() {
@@ -117,6 +121,11 @@ void GameLevel::eventHandler() {
 
 		/*Key Pressed*/
 		case sf::Event::KeyPressed: {
+			if (event.key.code == sf::Keyboard::Y) {
+				this->start = true;
+				this->gui.intro.setString("");
+				break;
+			}
 			if (event.key.code == sf::Keyboard::Q) {
 				game->window.close();
 				break;
@@ -130,7 +139,7 @@ void GameLevel::eventHandler() {
 			if (event.key.code == sf::Keyboard::W || event.key.code == sf::Keyboard::A ||
 				event.key.code == sf::Keyboard::S || event.key.code == sf::Keyboard::D) {
 				sf::Keyboard::Key k = event.key.code;
-				if (keyPress.getElapsedTime().asSeconds() > (this->game->gameSpeed/2) || k != lastPressed) {					
+				if (keyPress.getElapsedTime().asSeconds() > (this->game->gameSpeed/3) || k != lastPressed) {					
 					this->playerMove(k);
 					this->game->animgr.update(player.sprite, player.spriteOrigin);
 					keyPress.restart();
@@ -139,8 +148,16 @@ void GameLevel::eventHandler() {
 			}
 			if (event.key.code == sf::Keyboard::Return) {
 				if (this->player.spells > 0) {
-					this->map.explode(this->player);
+					this->map.spell(this->player);
 					this->game->audmgr.addBufferToQueue("explode");
+				}
+			}
+			if (event.key.code == sf::Keyboard::Space) {
+				if (this->map.interact(this->player)) {
+					this->altarsUnlocked++;
+					if (altarsUnlocked == 4) {
+						this->map.unlockTreasure();
+					}
 				}
 			}
 		}								
@@ -160,6 +177,9 @@ void GameLevel::playerMove(sf::Keyboard::Key& dirKey) {
 	}
 	if (!map.checkCollision(newPos, player,player)) {
 		player.updatePos(newPos);
+		if (player.grimoire) {
+			this->gameWon;
+		}
 	}
 	if (gems < player.gems) {
 		this->game->audmgr.addBufferToQueue("pickup");
@@ -176,6 +196,7 @@ GameLevel::GameLevel(Game* game) {
 	player = Player(sf::Vector2f(0, 0), game->texmgr.getRef("spritesheet"), game->animgr.firstFrame("player"));
 	this->game = game;
 	this->start = false;
+	this->altarsUnlocked = 0;
 	this->player = player;
 	this->game->bgMusic.openFromFile("assets/sounds/level.wav");
 	this->game->bgMusic.setVolume(25);
@@ -192,6 +213,7 @@ GameLevel::GameLevel(Game* game) {
 	map = Map(mapFiles["map1"], currentLevel, 15,15,32, game->tileAtlas, game, player, true);
 	mapList["map1"] = map;
 	map.distanceCalculation(player);
+	this->gui.update("intro", "");
 	this->gui.update("level", "Level: " + std::to_string(currentLevel));
 	this->gui.update("spells", "Spells: " + std::to_string(this->player.spells));
 

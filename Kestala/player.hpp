@@ -19,7 +19,8 @@ public:
 	int gems;
 	int spells;
 	int gold;
-	bool key;
+	int key;
+	bool grimoire;
 	std::string getHealth();
 	std::string getGems();
 	std::string getSpells();
@@ -38,7 +39,8 @@ public:
 		this->gems = 0;
 		this->gold = 0;
 		this->spells = 3;
-		this->key = false;
+		this->key = 0;
+		this->grimoire = false;
 		this->moveSpeed = 0.25;
 		this->beenHit = false;
 		this->sprite.setOrigin(sf::Vector2f(0.0f, 0.0f));

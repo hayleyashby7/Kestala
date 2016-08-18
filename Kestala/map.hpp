@@ -26,6 +26,7 @@ public:
 	int gems;
 	int totalGems;
 	int id;
+
 	
 	bool firstLevel = false;
 	bool nextLevel;
@@ -42,21 +43,29 @@ public:
 	std::vector<Enemy> enemies;
 	std::map<std::string, Tile> tileAtlas;
 
+	//load map and find cells
 	void loadMap(const std::string& filename, int id, unsigned int width, unsigned int height,
 		std::map<std::string, Tile>& enemyAtlas, Game* game, Player& player);
-
 	Cell* getCell(sf::Vector2f position);
+
+	//enemy movement
 	void distanceCalculation(Player& player);
 	void resetCellScores();
 	sf::Vector2f enemyPathFinder(Enemy& enemy, Player& player);
 	void enemyMove(Player& player, Game* game);
-	bool checkCollision(sf::Vector2f position, Entity movingEntity, Player& player);
-	std::string clueText();
 
+	//entity interactions
+	bool checkCollision(sf::Vector2f position, Entity movingEntity, Player& player);
+	void spell(Player& player);
+	bool interact(Player& player);
+	void unlockTreasure();
+	std::string clueText();
+	
+	//move between maps
 	void leaveMap(bool& change);
 	void returnMap(Player& player);
 	void restartMap(Player& player);
-	void explode(Player& player);
+
 
 	void draw(sf::RenderWindow& window);
 

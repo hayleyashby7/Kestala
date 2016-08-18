@@ -1,5 +1,5 @@
 CREDITS
-Programming and Background Art- Hayley Ashby
+Programming and Art- Hayley Ashby
 
 Character Sprites
 Philipp Lenssen under Creative Commons 3.0

@@ -25,7 +25,8 @@ private:
 
 	bool start;
 	int currentLevel;
-	int maxLevel = 2;
+	int maxLevel = 4;
+	int altarsUnlocked;
 	sf::Clock keyPress;
 	sf::Keyboard::Key lastPressed;
 

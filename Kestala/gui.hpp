@@ -10,7 +10,7 @@
 
 class Gui {
 public:
-
+	sf::Text intro;
 	sf::Text playerStatus;
 	sf::Text numOfGems;
 	sf::Text gold;

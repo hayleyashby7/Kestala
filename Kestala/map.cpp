@@ -56,6 +56,27 @@ void Map::loadMap(const std::string& filename, int id, unsigned int width, unsig
 				enemies.push_back(enemy);
 				break;
 			case 's':
+				switch (this->id)
+				{
+				case 1:
+					//fire enemy
+					enemy.sprite.setColor(sf::Color::Red);
+					break;
+				case 2:
+					//air enemy
+					enemy.sprite.setColor(sf::Color::Yellow);
+					break;
+				case 3:
+					//earth enemy
+					enemy.sprite.setColor(sf::Color::Green);
+					break;
+				case 4:
+					//water enemy
+					enemy.sprite.setColor(sf::Color::Cyan);
+					break;
+				default:
+					break;
+				}
 				enemy.isSolid = true;
 				enemies.push_back(enemy);
 				break;
@@ -99,7 +120,7 @@ void Map::loadMap(const std::string& filename, int id, unsigned int width, unsig
 			case 'b':
 				cell.cellContents.push_back(entityAtlas.at("waterGem"));
 				break;
-			case 'd':
+			case 'y':
 				cell.cellContents.push_back(entityAtlas.at("airGem"));
 				break;
 			}			
@@ -120,7 +141,7 @@ void Map::loadMap(const std::string& filename, int id, unsigned int width, unsig
 			case 'B':
 				cell.cellContents.push_back(entityAtlas.at("waterAltar"));
 				break;
-			case 'D':
+			case 'Y':
 				cell.cellContents.push_back(entityAtlas.at("airAltar"));
 				break;
 			}
@@ -327,11 +348,11 @@ bool Map::checkCollision(sf::Vector2f position, Entity movingEntity, Player& pla
 				//player reaches door
 				if (movingEntity.type == Entity::entityType::PLAYER
 					&& content.type == Entity::entityType::DOOR) {
-					if (player.key) {
+					if (player.key > 0) {
 						cell.cellContents.pop_back();
 						cell.cellContents.push_back(this->tileAtlas.at("openDoor"));
 						this->unlocked = true;
-						player.key = false;
+						player.key--;
 						return false;
 					}
 					else {
@@ -398,7 +419,7 @@ bool Map::checkCollision(sf::Vector2f position, Entity movingEntity, Player& pla
 							break;
 						case 'w':
 							//water gem
-							player.itemCollected["fireGem"] = true;
+							player.itemCollected["waterGem"] = true;
 							player.gems++;
 							while (player.health < 100 || healthAdd < 0) {
 								player.health++;
@@ -412,6 +433,8 @@ bool Map::checkCollision(sf::Vector2f position, Entity movingEntity, Player& pla
 							break;
 						case 'T':
 							//final treasure
+							player.grimoire = true;
+							cell.cellContents.pop_back();
 							break;
 						case 'C':
 							//clue
@@ -423,7 +446,7 @@ bool Map::checkCollision(sf::Vector2f position, Entity movingEntity, Player& pla
 							break;
 						case 'K':
 							//key
-							player.key = true;
+							player.key++;
 							break;
 						default:
 							break;
@@ -438,9 +461,9 @@ bool Map::checkCollision(sf::Vector2f position, Entity movingEntity, Player& pla
 			for (auto &enemy : this->enemies) {
 				if (enemy.getPosition() == movingEntity.getPosition() && enemy.active) {
 					movingEntity.takeDamage();
-					if (enemy.isSolid) {
-						return true;
-					}
+				}
+				if (enemy.isSolid && enemy.getPosition() == position) {
+					return true;
 				}
 			}
 		}	
@@ -463,7 +486,7 @@ void Map::restartMap(Player& player) {
 	nextLevel = false;
 }
 
-void Map::explode(Player& player) {
+void Map::spell(Player& player) {
 	player.spells--;
 	sf::Vector2f playerPos = player.getPosition();
 	std::vector<sf::Vector2f> nearby;
@@ -488,13 +511,68 @@ void Map::explode(Player& player) {
 
 }
 
+
+bool Map::interact(Player& player) {
+	sf::Vector2f position = player.getPosition();
+	for (auto &cell : this->mapCells) {
+		if (cell.cellX == (position.x/tileSize) && cell.cellY == (position.y/tileSize)) {
+			for (auto &content : cell.cellContents) {
+				//interactive item
+				if (content.type == Entity::entityType::INTERACTIVE) {
+					switch (content.id)
+					{
+					case 'r':
+						if (player.itemCollected["fireGem"]) {
+							cell.cellContents.pop_back();
+							cell.cellContents.push_back(this->tileAtlas.at("fireGem"));
+							
+						}
+						return true;
+					case 'g':
+						if (player.itemCollected["earthGem"]) {
+							cell.cellContents.pop_back();
+							cell.cellContents.push_back(this->tileAtlas.at("earthGem"));
+						}
+						return true;
+					case 'y':
+						if (player.itemCollected["airGem"]) {
+							cell.cellContents.pop_back();
+							cell.cellContents.push_back(this->tileAtlas.at("airGem"));
+						}
+						return true;
+					case 'b':
+						if (player.itemCollected["waterGem"]) {
+							cell.cellContents.pop_back();
+							cell.cellContents.push_back(this->tileAtlas.at("waterGem"));
+						}
+						return true;
+					default:
+						return false;
+					}
+				}
+			}
+		}
+	}
+}
+
+void Map::unlockTreasure() {
+	for (auto &cell : this->mapCells) {
+		for (auto &content : cell.cellContents) {
+			if (content.id == 'H') {
+				cell.cellContents.pop_back();
+				cell.cellContents.push_back(this->tileAtlas.at("treasure"));
+			}
+		
+		}
+	}
+}
+
 std::string Map::clueText() {
-	std::string clue = "True Arcane Power \ncomes from the \n joining  of all \n elements of creation";
+	std::string clue = "Misplaced Note:\nTrue Arcane Power \ncomes from the \n joining  of all \n elements of creation";
 	return clue;
 }
 
 void Map::draw(sf::RenderWindow& window) {
-
 	for (auto &cell : this->mapCells) {
 		for (auto &content : cell.cellContents) {
 			if (content.active) {

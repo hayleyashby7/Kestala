@@ -1,12 +1,6 @@
-You are Wryn, a brave sorcerer-in-training.
-Armed with only your trusty explosion spell,
-you seek "Kestala's Grimoire",
-a long-lost spellbook of great power.
-Determined you bravely explore the haunted caves of Kestala,
-...but beware what lies within!
-
 Controls
 W- Up	A- Left	
 S-Down	D-Right
-Enter - EXPLOSION!
+Enter - Spell
+Space - Interact
 Q-Quit	B-Back to Menu
