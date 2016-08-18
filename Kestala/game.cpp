@@ -17,12 +17,27 @@ void Game::loadTextures() {
 
 void Game::loadTiles() {
 	sf::Texture& spriteSheet(texmgr.getRef("spritesheet"));
-	this->tileAtlas["floor"] = Tile(this->tileHeight, spriteSheet, animgr.firstFrame("floor"), false, Entity::entityType::FLOOR);
-	this->tileAtlas["wall"] = Tile(this->tileHeight, spriteSheet, animgr.firstFrame("wall"), true, Entity::entityType::WALL);
-	this->tileAtlas["exit"] = Tile(this->tileHeight, spriteSheet, animgr.firstFrame("opendoor"), false, Entity::entityType::EXIT);
-	this->tileAtlas["blockedexit"] = Tile(this->tileHeight, spriteSheet, animgr.firstFrame("blockedExit"), false, Entity::entityType::EXIT);
-	this->tileAtlas["start"] = Tile(this->tileHeight, spriteSheet, animgr.firstFrame("opendoor"), false, Entity::entityType::START);
-	this->tileAtlas["gem"] = Tile(this->tileHeight, spriteSheet, animgr.firstFrame("gem"), false, Entity::entityType::PICKUP);
+	this->tileAtlas["floor"] = Tile(this->tileHeight, spriteSheet, animgr.firstFrame("floor"), false, Entity::entityType::FLOOR, 'F');
+	this->tileAtlas["wall"] = Tile(this->tileHeight, spriteSheet, animgr.firstFrame("wall"), true, Entity::entityType::WALL, 'W');
+	this->tileAtlas["exit"] = Tile(this->tileHeight, spriteSheet, animgr.firstFrame("opendoor"), false, Entity::entityType::EXIT, 'E');
+	this->tileAtlas["openDoor"] = Tile(this->tileHeight, spriteSheet, animgr.firstFrame("opendoor"), false, Entity::entityType::DOOR, 'O');
+	this->tileAtlas["blockedDoor"] = Tile(this->tileHeight, spriteSheet, animgr.firstFrame("blockeddoor"), true, Entity::entityType::DOOR, 'B');
+	this->tileAtlas["start"] = Tile(this->tileHeight, spriteSheet, animgr.firstFrame("opendoor"), false, Entity::entityType::START, 'S');
+	this->tileAtlas["fireGem"] = Tile(this->tileHeight, spriteSheet, animgr.firstFrame("firegem"), false, Entity::entityType::PICKUP, 'f');
+	this->tileAtlas["earthGem"] = Tile(this->tileHeight, spriteSheet, animgr.firstFrame("earthgem"), false, Entity::entityType::PICKUP, 'e');
+	this->tileAtlas["airGem"] = Tile(this->tileHeight, spriteSheet, animgr.firstFrame("airgem"), false, Entity::entityType::PICKUP, 'a');
+	this->tileAtlas["waterGem"] = Tile(this->tileHeight, spriteSheet, animgr.firstFrame("watergem"), false, Entity::entityType::PICKUP, 'w');
+	this->tileAtlas["fireAltar"] = Tile(this->tileHeight, spriteSheet, animgr.firstFrame("firealtar"), false, Entity::entityType::INTERACTIVE, 'r');
+	this->tileAtlas["earthAltar"] = Tile(this->tileHeight, spriteSheet, animgr.firstFrame("earthaltar"), false, Entity::entityType::INTERACTIVE, 'g');
+	this->tileAtlas["airAltar"] = Tile(this->tileHeight, spriteSheet, animgr.firstFrame("airaltar"), false, Entity::entityType::INTERACTIVE, 'y');
+	this->tileAtlas["waterAltar"] = Tile(this->tileHeight, spriteSheet, animgr.firstFrame("wateraltar"), false, Entity::entityType::INTERACTIVE, 'b');
+	this->tileAtlas["hiddenTreasure"] = Tile(this->tileHeight, spriteSheet, animgr.firstFrame("hiddentreasure"), false, Entity::entityType::INTERACTIVE, 'H');
+	this->tileAtlas["treasure"] = Tile(this->tileHeight, spriteSheet, animgr.firstFrame("treasure"), false, Entity::entityType::PICKUP, 'T');
+	this->tileAtlas["clue"] = Tile(this->tileHeight, spriteSheet, animgr.firstFrame("clue"), false, Entity::entityType::PICKUP, 'C');
+	this->tileAtlas["minorTreasure"] = Tile(this->tileHeight, spriteSheet, animgr.firstFrame("minortreasure"), false, Entity::entityType::PICKUP, 'M');
+	this->tileAtlas["key"] = Tile(this->tileHeight, spriteSheet, animgr.firstFrame("key"), false, Entity::entityType::PICKUP, 'K');
+	
+
 }
 
 void Game::loadAudio() {

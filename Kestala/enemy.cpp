@@ -25,12 +25,6 @@ sf::Vector2f Enemy::changeDirection() {
 	return newPos;
 }
 
-void Enemy::setX(int x) {
-	this->x = x;
-}
-void Enemy::setY(int y) {
-	this->y = y;
-}
 
 void Enemy::randomDirection() {
 	std::random_device seed;

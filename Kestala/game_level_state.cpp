@@ -78,7 +78,6 @@ void GameLevel::update(sf::Clock& clock) {
 				currentLevel--;
 			}
 			map = prevLevels[currentLevel - 1];
-			this->gui.update("level", "Level: " + std::to_string(currentLevel));
 			map.returnMap(player);
 
 		}
@@ -88,12 +87,17 @@ void GameLevel::update(sf::Clock& clock) {
 		if (dt > this->game->gameSpeed) {
 			this->map.enemyMove(player, this->game);			
 			if (this->player.beenHit) {
-				this->gui.update("player", "Health: " + this->player.getHealth());
-				this->gui.update("gem", "Gems Gathered: " + this->player.getGems());
 				this->game->audmgr.addBufferToQueue("playerhit");
 			}
 			gameOver = player.isDead();
 			this->player.beenHit = false;
+		}
+		this->gui.update("player", "Health: " + this->player.getHealth());
+		this->gui.update("spells", "Spells: " + this->player.getSpells());
+		this->gui.update("gem", "Gems Gathered: " + this->player.getGems());
+		this->gui.update("gold", "Gold Collected: " + this->player.getGold());
+		if (this->map.clueFound) {
+			this->gui.update("clue", this->map.clueText());
 		}
 		this->game->audmgr.playSound(this->game->SFX);
 		return;
@@ -128,7 +132,7 @@ void GameLevel::eventHandler() {
 				sf::Keyboard::Key k = event.key.code;
 				if (keyPress.getElapsedTime().asSeconds() > (this->game->gameSpeed/2) || k != lastPressed) {					
 					this->playerMove(k);
-					this->game->animgr.update(player.sprite);
+					this->game->animgr.update(player.sprite, player.spriteOrigin);
 					keyPress.restart();
 					lastPressed = k;
 				}			
@@ -136,7 +140,6 @@ void GameLevel::eventHandler() {
 			if (event.key.code == sf::Keyboard::Return) {
 				if (this->player.spells > 0) {
 					this->map.explode(this->player);
-					this->gui.update("spells", "Spells: " + std::to_string(this->player.spells));
 					this->game->audmgr.addBufferToQueue("explode");
 				}
 			}
@@ -150,30 +153,23 @@ void GameLevel::eventHandler() {
 }
 
 void GameLevel::playerMove(sf::Keyboard::Key& dirKey) {	
-		int mapGems = map.gems;
-		sf::Vector2f newPos = player.movePosition(dirKey);
-		this->game->animgr.changeDirection(dirKey, player.sprite);
-		if (!map.checkCollision(newPos, player)) {
-			player.updatePos(newPos);
-		}
-		if (map.gems < mapGems) {
-			player.gems++;
-			this->game->audmgr.addBufferToQueue("pickup");
-			this->gui.update("gem", "Gems Gathered: " + this->player.getGems());
-		}
-
-		if (this->player.beenHit) {
-			this->gui.update("player", "Health: " + this->player.getHealth());
-
-		}
-
-		gameOver = player.isDead();
-		this->player.beenHit = false;
-		if (this->map.unlocked && !this->map.doorOpened) {
-			this->game->audmgr.addBufferToQueue("unlockdoor");
-			this->map.doorOpened = true;
-		}
-	
+	int gems = player.gems;
+	sf::Vector2f newPos = player.movePosition(dirKey);
+	if (dirKey != lastPressed) {
+		this->game->animgr.changeDirection(dirKey, player.sprite, player.spriteOrigin);
+	}
+	if (!map.checkCollision(newPos, player,player)) {
+		player.updatePos(newPos);
+	}
+	if (gems < player.gems) {
+		this->game->audmgr.addBufferToQueue("pickup");
+	}
+	gameOver = player.isDead();
+	this->player.beenHit = false;
+	if (this->map.unlocked) {
+		this->game->audmgr.addBufferToQueue("unlockdoor");
+		this->map.unlocked = false;
+	}
 }
 
 GameLevel::GameLevel(Game* game) {

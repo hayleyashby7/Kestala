@@ -3,6 +3,7 @@
 
 #include <SFML\Graphics.hpp>
 #include <vector>
+#include <string>
 
 #include "entity.hpp"
 
@@ -12,17 +13,21 @@ public:
 	
 	void draw(sf::RenderWindow& window);
 	int tileSize;
-
+	sf::Vector2f spriteOrigin;
 
 	Tile(){}
 
-	Tile(const unsigned int tileSize, sf::Texture& texture, sf::IntRect texturePosition, bool isSolid, entityType type){
+	Tile(const unsigned int tileSize, sf::Texture& texture, sf::IntRect texturePosition, bool isSolid, entityType type, char id){
 		this->type = type;
+		this->id = id;
 		this->isSolid = isSolid;
 		this->tileSize = tileSize;
 		this->sprite.setOrigin(sf::Vector2f(0.0f, 0.0f));
 		this->sprite.setTexture(texture);
-		this->sprite.setTextureRect(texturePosition);		
+		this->sprite.setTextureRect(texturePosition);
+		this->spriteOrigin.x = texturePosition.top;
+		this->spriteOrigin.y = texturePosition.left;
+
 	}
 
 

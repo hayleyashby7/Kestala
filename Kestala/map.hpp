@@ -32,7 +32,7 @@ public:
 	bool prevLevel;
 	bool prevVisited = false;
 	bool unlocked = false;
-	bool doorOpened = false;
+	bool clueFound = false;
 
 
 	sf::Vector2f exitPos;
@@ -50,7 +50,8 @@ public:
 	void resetCellScores();
 	sf::Vector2f enemyPathFinder(Enemy& enemy, Player& player);
 	void enemyMove(Player& player, Game* game);
-	bool checkCollision(sf::Vector2f position, Entity movingEntity);
+	bool checkCollision(sf::Vector2f position, Entity movingEntity, Player& player);
+	std::string clueText();
 
 	void leaveMap(bool& change);
 	void returnMap(Player& player);

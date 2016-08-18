@@ -31,26 +31,41 @@ void Map::loadMap(const std::string& filename, int id, unsigned int width, unsig
 		case 'E':
 			//exit
 			exitPos = sf::Vector2f(currentX * this->tileSize, currentY* this->tileSize);
-			cell.cellContents.push_back(entityAtlas.at("blockedexit"));
+			cell.cellContents.push_back(entityAtlas.at("exit"));
 			break;
+
 		case 'L':
 			//locked passage
-			cell.cellContents.push_back(entityAtlas.at("wall"));
+			cell.cellContents.push_back(entityAtlas.at("blockedDoor"));
 			break;
+		case 'k':
+			//key
+			cell.cellContents.push_back(entityAtlas.at("floor"));
+			cell.cellContents.push_back(entityAtlas.at("key"));
+			break;
+
 		case 'e': {
 			//enemy
 			Enemy enemy = Enemy(sf::Vector2f(currentX * this->tileSize, currentY* this->tileSize), game->texmgr.getRef("spritesheet"), game->animgr.firstFrame("enemy"));
-			enemy.setX(currentX);
-			enemy.setY(currentY);
-			enemies.push_back(enemy);
+			char nxtE;
+			input.get(nxtE);
+			switch (nxtE)
+			{
+			case 'n':
+				enemy.isSolid = false;
+				enemies.push_back(enemy);
+				break;
+			case 's':
+				enemy.isSolid = true;
+				enemies.push_back(enemy);
+				break;
+			}
 			cell.cellContents.push_back(entityAtlas.at("floor"));
 			break;
 		}
 		case 'P':
 			//player
 			player.setPosition(sf::Vector2f(currentX * this->tileSize, currentY* this->tileSize));
-			player.setX(currentX);
-			player.setY(currentY);
 			startPos = sf::Vector2f(currentX * this->tileSize, currentY* this->tileSize);
 			cell.cellContents.push_back(entityAtlas.at("start"));
 			break;
@@ -58,27 +73,62 @@ void Map::loadMap(const std::string& filename, int id, unsigned int width, unsig
 		case 't':
 			//minor treasure
 			cell.cellContents.push_back(entityAtlas.at("floor"));
+			cell.cellContents.push_back(entityAtlas.at("minorTreasure"));
 
 			break;
 		case 'T':
 			//main treasure
 			cell.cellContents.push_back(entityAtlas.at("floor"));
+			cell.cellContents.push_back(entityAtlas.at("hiddenTreasure"));
 			break;
 
 		case 'g':
 			//spell gems
 			this->gems++;
 			cell.cellContents.push_back(entityAtlas.at("floor"));
-			cell.cellContents.push_back(entityAtlas.at("gem"));
+			char nxtG;
+			input.get(nxtG);
+			switch (nxtG)
+			{
+			case 'r':
+				cell.cellContents.push_back(entityAtlas.at("fireGem"));
+				break;
+			case 'g':
+				cell.cellContents.push_back(entityAtlas.at("earthGem"));
+				break;
+			case 'b':
+				cell.cellContents.push_back(entityAtlas.at("waterGem"));
+				break;
+			case 'd':
+				cell.cellContents.push_back(entityAtlas.at("airGem"));
+				break;
+			}			
 			break;
 		case 'G':
-			//spell gem drop point
+			//Gem Altar
 			cell.cellContents.push_back(entityAtlas.at("floor"));
+			char nxtA;
+			input.get(nxtA);
+			switch (nxtA)
+			{
+			case 'R':
+				cell.cellContents.push_back(entityAtlas.at("fireAltar"));
+				break;
+			case 'G':
+				cell.cellContents.push_back(entityAtlas.at("earthAltar"));
+				break;
+			case 'B':
+				cell.cellContents.push_back(entityAtlas.at("waterAltar"));
+				break;
+			case 'D':
+				cell.cellContents.push_back(entityAtlas.at("airAltar"));
+				break;
+			}
 			break;
-
-		case 'k':
-			//key
+		case 'c':
+			//clue
 			cell.cellContents.push_back(entityAtlas.at("floor"));
+			cell.cellContents.push_back(entityAtlas.at("clue"));
 			break;
 		default:
 			break;
@@ -107,22 +157,22 @@ void Map::distanceCalculation(Player& player) {
 }
 
 void Map::enemyMove(Player &player, Game* game) {
-	distanceCalculation(player);
-	for (auto &enemy : this->enemies) {
-		if (enemy.active) {
-			sf::Vector2f newEnemyPos = enemyPathFinder(enemy, player);			
-			if (!checkCollision(newEnemyPos, enemy)) {
-				enemy.updatePos(newEnemyPos);
-				enemy.setX(newEnemyPos.x /tileSize);
-				enemy.setY(newEnemyPos.y/tileSize);
-			}
-			if (enemy.getPosition() == player.getPosition()) {
-				player.takeDamage();
-			}
-			game->animgr.update(enemy.sprite);
-		}
+	//distanceCalculation(player);
+	//for (auto &enemy : this->enemies) {
+	//	if (enemy.active) {
+	//		if (!enemy.isSolid) {
+	//			sf::Vector2f newEnemyPos = enemyPathFinder(enemy, player);
+	//			if (!checkCollision(newEnemyPos, enemy, player)) {
+	//				enemy.updatePos(newEnemyPos);
+	//			}
+	//		}
+	//		if (enemy.getPosition() == player.getPosition()) {
+	//			player.takeDamage();
+	//		}
+	//		game->animgr.update(enemy.sprite, enemy.spriteOrigin);
+	//	}
 
-	}
+	//}
 }
 
 struct lowestFScore {
@@ -251,7 +301,7 @@ sf::Vector2f Map::enemyPathFinder(Enemy& enemy, Player& player) {
 	}
 }
 
-bool Map::checkCollision(sf::Vector2f position, Entity movingEntity) {
+bool Map::checkCollision(sf::Vector2f position, Entity movingEntity, Player& player) {
 	position.x = position.x / tileSize;
 	position.y = position.y / tileSize;
 
@@ -264,7 +314,6 @@ bool Map::checkCollision(sf::Vector2f position, Entity movingEntity) {
 	//check collisions within map
 	for (auto &cell : this->mapCells) {
 		if (cell.cellX == position.x && cell.cellY == position.y) {
-			int currentGems = this->gems;
 			for (auto &content : cell.cellContents) {
 				if (content.type == Entity::entityType::WALL) {
 					return true;
@@ -272,13 +321,24 @@ bool Map::checkCollision(sf::Vector2f position, Entity movingEntity) {
 				//player reaches exit
 				if (movingEntity.type == Entity::entityType::PLAYER
 					&& content.type == Entity::entityType::EXIT) {
-					if ((this->totalGems - this->gems) >= 3) {
-						leaveMap(this->nextLevel);
+					leaveMap(this->nextLevel);
+				}
+
+				//player reaches door
+				if (movingEntity.type == Entity::entityType::PLAYER
+					&& content.type == Entity::entityType::DOOR) {
+					if (player.key) {
+						cell.cellContents.pop_back();
+						cell.cellContents.push_back(this->tileAtlas.at("openDoor"));
+						this->unlocked = true;
+						player.key = false;
+						return false;
 					}
 					else {
 						return true;
 					}
 				}
+
 				//player goes back level
 				if (movingEntity.type == Entity::entityType::PLAYER
 					&& content.type == Entity::entityType::START
@@ -290,35 +350,100 @@ bool Map::checkCollision(sf::Vector2f position, Entity movingEntity) {
 				if (movingEntity.type == Entity::entityType::PLAYER
 					&& content.type == Entity::entityType::PICKUP) {
 					if (content.active) {
-						this->gems--;
 						content.active = false;
-						if ((this->totalGems - this->gems) >= 3) {
-							for (auto& cell : mapCells) {
-								if (cell.cellX == (this->exitPos.x / tileSize) && cell.cellY == (this->exitPos.y / tileSize)) {
-									cell.cellContents.pop_back();
-									cell.cellContents.push_back(this->tileAtlas.at("exit"));
-									this->unlocked = true;
-								}
+						int healthAdd = 25;
+						switch (content.id)
+						{
+						case 'f':
+							//fire gem
+							player.itemCollected["fireGem"] = true;	
+							player.gems++;
+							while (player.health < 100 || healthAdd < 0) {
+								player.health++;
+								healthAdd--;
 							}
+							if (player.spells < 3) {
+								player.spells += 1;
+							}
+							cell.cellContents.pop_back();
+							return false;
+							break;
+						case 'e':
+							//earth gem
+							player.itemCollected["earthGem"] = true;
+							player.gems++;
+							while (player.health < 100 || healthAdd < 0) {
+								player.health++;
+								healthAdd--;
+							}
+							if (player.spells < 3) {
+								player.spells += 1;
+							}
+							cell.cellContents.pop_back();
+							return false;
+							break;
+						case 'a':
+							//air gem
+							player.itemCollected["airGem"] = true;
+							player.gems++;
+							while (player.health < 100 || healthAdd < 0) {
+								player.health++;
+								healthAdd--;
+							}
+							if (player.spells < 3) {
+								player.spells += 1;
+							}
+							cell.cellContents.pop_back();
+							return false;
+							break;
+						case 'w':
+							//water gem
+							player.itemCollected["fireGem"] = true;
+							player.gems++;
+							while (player.health < 100 || healthAdd < 0) {
+								player.health++;
+								healthAdd--;
+							}
+							if (player.spells < 3) {
+								player.spells += 1;
+							}
+							cell.cellContents.pop_back();
+							return false;
+							break;
+						case 'T':
+							//final treasure
+							break;
+						case 'C':
+							//clue
+							clueFound = true;
+							break;
+						case 'M':
+							//minor treasure
+							player.gold += 20;
+							break;
+						case 'K':
+							//key
+							player.key = true;
+							break;
+						default:
+							break;
 						}
 					}
 				}
 			}
-			if (currentGems != this->gems) {
-				cell.cellContents.pop_back();
-			}
 		}
 	}
-
-	//check if player hits enemy
-	if (movingEntity.type == Entity::entityType::PLAYER) {
-		for (auto &enemy : this->enemies) {
-			if (enemy.getPosition() == movingEntity.getPosition() && enemy.active) {
-				movingEntity.takeDamage();
+		//check if player hits enemy
+		if (movingEntity.type == Entity::entityType::PLAYER) {
+			for (auto &enemy : this->enemies) {
+				if (enemy.getPosition() == movingEntity.getPosition() && enemy.active) {
+					movingEntity.takeDamage();
+					if (enemy.isSolid) {
+						return true;
+					}
+				}
 			}
-		}
-	}
-
+		}	
 	return false;
 }
 
@@ -352,28 +477,6 @@ void Map::explode(Player& player) {
 	nearby[2].y += tileSize;
 	nearby[3].y -= tileSize;
 
-	for (auto& cell : mapCells) {
-		for (auto& near : nearby) {
-			if (cell.getPosition() == near) {
-				bool changed = false;
-				for (auto &content : cell.cellContents) {
-					switch (content.type) {
-					case Entity::entityType::WALL:
-						content.type = Entity::entityType::FLOOR;
-						changed = true;
-						break;
-					default:
-						break;
-					}
-				}
-				if (changed) {
-					cell.cellContents.pop_back();
-					cell.cellContents.push_back(this->tileAtlas.at("floor"));
-				}
-			}
-		}
-	}
-
 	for (auto& enemy : enemies) {
 		for (auto& near : nearby) {
 			if (enemy.getPosition() == near) {
@@ -383,6 +486,11 @@ void Map::explode(Player& player) {
 	}
 
 
+}
+
+std::string Map::clueText() {
+	std::string clue = "True Arcane Power \ncomes from the \n joining  of all \n elements of creation";
+	return clue;
 }
 
 void Map::draw(sf::RenderWindow& window) {

@@ -15,10 +15,10 @@ public:
 	sf::IntRect firstFrame(std::string name);
 
 	//update sprites
-	void update(sf::Sprite& sprite);
+	void update(sf::Sprite& sprite, sf::Vector2f origin);
 
 	//called if player changes direction - update sprite
-	void changeDirection(sf::Keyboard::Key& direction, sf::Sprite& sprite);
+	void changeDirection(sf::Keyboard::Key& direction, sf::Sprite& sprite, sf::Vector2f& origin);
 
 	//Constructor
 	AnimationManager();

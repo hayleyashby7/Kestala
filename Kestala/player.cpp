@@ -28,21 +28,10 @@ void Player::setPosition(sf::Vector2f position) {
 	this->sprite.setPosition(position);
 	return;
 }
-void Player::setX(int x) {
-	this->x = x;
-}
-void Player::setY(int y) {
-	this->y = y;
-}
+
 
 void Player::takeDamage() {
-	if (gems > 0) {
-		gems--;
-		this->health -= 10;
-	}
-	else {
-		this->health -= 25;
-	}	
+	this->health -= 10;	
 	beenHit = true;
 }
 
@@ -54,6 +43,16 @@ std::string Player::getHealth() {
 std::string Player::getGems() {
 	std::string gemNum = std::to_string(this->gems);
 	return gemNum;
+}
+
+std::string Player::getSpells() {
+	std::string spellNum = std::to_string(this->spells);
+	return spellNum;
+}
+
+std::string Player::getGold() {
+	std::string goldNum = std::to_string(this->gold);
+	return goldNum;
 }
 
 bool Player::isDead() {

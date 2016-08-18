@@ -1,16 +1,18 @@
 #include "gui.hpp"
 Gui::Gui() {
 	font.loadFromFile("assets/asst/KF.ttf");
-	
-	this->guiText["level"] = levelNumber;
+	this->guiText["clue"] = clue;
+	this->guiText["gold"] = gold;
 	this->guiText["gem"] = numOfGems;
 	this->guiText["player"] = playerStatus;
 	this->guiText["spells"] = spells;
 
-	guiText["level"].setString("Level: ");
+
+	guiText["gold"].setString("Gold Collected: ");
 	guiText["gem"].setString("Gems Gathered: 0");
 	guiText["player"].setString("Health: 100");
 	guiText["spells"].setString("Spells: ");
+	guiText["clue"].setString("");
 
 	guiStart.x = 500;
 	guiStart.y = 25;
@@ -25,6 +27,7 @@ Gui::Gui() {
 		text.second.setCharacterSize(20);
 		i++;
 	}
+	guiText["clue"].setColor(sf::Color::Color(102, 255, 255, 255));
 };
 void Gui::draw(sf::RenderWindow& window) {
 	for (auto &text : this->guiText) {

@@ -11,12 +11,11 @@ public:
 	//enemy movement
 	
 	enum direction {up = 1, down, left, right} enemyDirection;
-	int x, y;
 
 	sf::Vector2f changeDirection();
 	void randomDirection();
-	void setX(int x);
-	void setY(int y);
+
+
 
 	Enemy() {}
 
@@ -28,6 +27,8 @@ public:
 		this->sprite.setPosition(initialPos);
 		this->sprite.setTexture(texture);
 		this->sprite.setTextureRect(texturePosition);
+		this->spriteOrigin.x = texturePosition.left;
+		this->spriteOrigin.y = texturePosition.top;
 		randomDirection();
 	}
 
