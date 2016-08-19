@@ -5,14 +5,15 @@ Gui::Gui() {
 	this->guiText["t_clue"] = clue;
 	this->guiText["gold"] = gold;
 	this->guiText["gem"] = numOfGems;
-	this->guiText["player"] = playerStatus;
+	this->guiText["health"] = playerStatus;
+	this->guiText["keys"] = keys;
 	this->guiText["spells"] = spells;
 
-
-	guiText["gold"].setString("Gold Collected: 0");
+	guiText["gold"].setString("Gold Found: 0");
 	guiText["gem"].setString("Gems Gathered: 0");
-	guiText["player"].setString("Health: 100");
-	guiText["spells"].setString("Spells: ");
+	guiText["health"].setString("Health: 100");
+	guiText["keys"].setString("Keys Collected: 0");
+	guiText["spells"].setString("Spells: 0");
 	guiText["t_clue"].setString("");
 
 	intro.setString(" ");
@@ -27,7 +28,7 @@ Gui::Gui() {
 	int i = 0;
 	for (auto &text : this->guiText) {
 		float x = guiStart.x;
-		float y = guiStart.y + (i * 75);
+		float y = guiStart.y + (i * 60);
 		text.second.setPosition(x, y);
 		text.second.setFont(font);
 		text.second.setColor(sf::Color::White);

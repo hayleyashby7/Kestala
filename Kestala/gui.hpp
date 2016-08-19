@@ -15,6 +15,7 @@ public:
 	sf::Text numOfGems;
 	sf::Text gold;
 	sf::Text spells;
+	sf::Text keys;
 	sf::Text clue;
 	sf::Font font;
 

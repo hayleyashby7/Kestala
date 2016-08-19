@@ -55,9 +55,11 @@ public:
 	void enemyMove(Player& player, Game* game);
 
 	//entity interactions
-	bool checkCollision(sf::Vector2f position, Entity movingEntity, Player& player);
+	bool playerCollision(sf::Vector2f position, Player& player);
+	bool enemyCollision(sf::Vector2f position,Enemy& enemy, Player& player);
 	void spell(Player& player);
 	bool interact(Player& player);
+	std::vector<sf::Vector2f> nearPlayer(Player& player);
 	void unlockTreasure();
 	std::string clueText();
 	

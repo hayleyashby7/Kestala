@@ -25,6 +25,7 @@ public:
 	std::string getGems();
 	std::string getSpells();
 	std::string getGold();
+	std::string getKeys();
 	void takeDamage();
 	bool isDead();
 	std::map <std::string, bool> itemCollected;

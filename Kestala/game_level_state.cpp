@@ -95,10 +95,11 @@ void GameLevel::update(sf::Clock& clock) {
 			gameOver = player.isDead();
 			this->player.beenHit = false;
 		}
-		this->gui.update("player", "Health: " + this->player.getHealth());
+		this->gui.update("health", "Health: " + this->player.getHealth());
 		this->gui.update("spells", "Spells: " + this->player.getSpells());
 		this->gui.update("gem", "Gems Gathered: " + this->player.getGems());
-		this->gui.update("gold", "Gold Collected: " + this->player.getGold());
+		this->gui.update("gold", "Gold Found: " + this->player.getGold());
+		this->gui.update("keys", "Keys Collected: " + this->player.getKeys());
 		if (this->map.clueFound) {
 			this->gui.update("t_clue", this->map.clueText());
 		}
@@ -152,7 +153,7 @@ void GameLevel::eventHandler() {
 					this->game->audmgr.addBufferToQueue("explode");
 				}
 			}
-			if (event.key.code == sf::Keyboard::Space) {
+ 			if (event.key.code == sf::Keyboard::Space) {
 				if (this->map.interact(this->player)) {
 					this->altarsUnlocked++;
 					if (altarsUnlocked == 4) {
@@ -175,15 +176,13 @@ void GameLevel::playerMove(sf::Keyboard::Key& dirKey) {
 	if (dirKey != lastPressed) {
 		this->game->animgr.changeDirection(dirKey, player.sprite, player.spriteOrigin);
 	}
-	if (!map.checkCollision(newPos, player,player)) {
+	if (!map.playerCollision(newPos, player)) {
 		player.updatePos(newPos);
-		if (player.grimoire) {
-			this->gameWon;
-		}
 	}
 	if (gems < player.gems) {
 		this->game->audmgr.addBufferToQueue("pickup");
 	}
+	gameWon = player.grimoire;
 	gameOver = player.isDead();
 	this->player.beenHit = false;
 	if (this->map.unlocked) {
