@@ -27,7 +27,18 @@ public:
 		this->sprite.setTextureRect(texturePosition);
 		this->spriteOrigin.x = texturePosition.top;
 		this->spriteOrigin.y = texturePosition.left;
-
+	}
+	Tile(const unsigned int tileSize, sf::Texture& texture, sf::IntRect texturePosition, sf::Color colour, bool isSolid, entityType type, char id) {
+		this->type = type;
+		this->id = id;
+		this->isSolid = isSolid;
+		this->tileSize = tileSize;
+		this->sprite.setOrigin(sf::Vector2f(0.0f, 0.0f));
+		this->sprite.setTexture(texture);
+		this->sprite.setTextureRect(texturePosition);
+		this->sprite.setColor(colour);
+		this->spriteOrigin.x = texturePosition.top;
+		this->spriteOrigin.y = texturePosition.left;
 	}
 
 

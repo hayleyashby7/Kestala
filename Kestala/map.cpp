@@ -53,26 +53,29 @@ void Map::loadMap(const std::string& filename, int id, unsigned int width, unsig
 			{
 			case 'n':
 				enemy.isSolid = false;
+				enemy.id = 0;
 				enemies.push_back(enemy);
 				break;
 			case 's':
-				switch (this->id)
+				char eType;
+				input.get(eType);
+				switch (eType)
 				{
-				case 1:
-					//fire enemy
-					enemy.sprite.setColor(sf::Color::Red);
-					break;
-				case 2:
+				case '1':
 					//air enemy
-					enemy.sprite.setColor(sf::Color::Yellow);
+					enemy.sprite.setColor(airColour);
 					break;
-				case 3:
+				case '2':
 					//earth enemy
-					enemy.sprite.setColor(sf::Color::Green);
+					enemy.sprite.setColor(earthColour);
 					break;
-				case 4:
+				case '3':
+					//fire enemy
+					enemy.sprite.setColor(fireColour);
+					break;
+				case '4':
 					//water enemy
-					enemy.sprite.setColor(sf::Color::Cyan);
+					enemy.sprite.setColor(waterColour);
 					break;
 				default:
 					break;
@@ -178,21 +181,21 @@ void Map::distanceCalculation(Player& player) {
 }
 
 void Map::enemyMove(Player &player, Game* game) {
-	//distanceCalculation(player);
-	//for (auto &enemy : this->enemies) {
-	//	if (enemy.active) {
-	//		if (!enemy.isSolid) {
-	//			sf::Vector2f newEnemyPos = enemyPathFinder(enemy, player);
-	//			if (!enemyCollision(newEnemyPos, enemy, player)) {
-	//				enemy.updatePos(newEnemyPos);
-	//			}
-	//		}
-	//		if (enemy.getPosition() == player.getPosition()) {
-	//			player.takeDamage();
-	//		}
-	//		game->animgr.update(enemy.sprite, enemy.spriteOrigin);
-	//	}
-	//}
+	distanceCalculation(player);
+	for (auto &enemy : this->enemies) {
+		if (enemy.active) {
+			if (!enemy.isSolid) {
+				sf::Vector2f newEnemyPos = enemyPathFinder(enemy, player);
+				if (!enemyCollision(newEnemyPos, enemy, player)) {
+					enemy.updatePos(newEnemyPos);
+				}
+			}
+			if (enemy.getPosition() == player.getPosition()) {
+				player.takeDamage();
+			}
+			game->animgr.update(enemy.sprite, enemy.spriteOrigin);
+		}
+	}
 }
 
 struct lowestFScore {
@@ -496,7 +499,39 @@ void Map::spell(Player& player) {
 	for (auto& enemy : enemies) {
 		for (auto& near : nearby) {
 			if (enemy.getPosition() == near) {
-				enemy.active = false;
+				switch (enemy.id)
+				{
+				case 0:
+					//normal enemy
+					enemy.active = false;
+					break;
+				case 1:
+					//fire enemy
+					if (player.itemCollected["fireGem"]) {
+						enemy.active = false;
+					}					
+					break;
+				case 2:
+					//air enemy
+					if (player.itemCollected["airGem"]) {
+						enemy.active = false;
+					}
+					break;
+				case 3:
+					//earth enemy
+					if (player.itemCollected["earthGem"]) {
+						enemy.active = false;
+					}
+					break;
+				case 4:
+					//water enemy
+					if (player.itemCollected["waterGem"]) {
+						enemy.active = false;
+					}
+					break;
+				default:
+					break;
+				}				
 			}
 		}
 	}
@@ -515,7 +550,6 @@ bool Map::interact(Player& player) {
 					{
 					case 'r':
 						if (player.itemCollected["fireGem"]) {
-							cell.cellContents.pop_back();
 							Entity gem = this->tileAtlas.at("fireGem");
 							gem.isSolid = true;
 							cell.cellContents.push_back(gem);
@@ -525,7 +559,6 @@ bool Map::interact(Player& player) {
 						break;
 					case 'g':
 						if (player.itemCollected["earthGem"]) {
-							cell.cellContents.pop_back();
 							Entity gem = this->tileAtlas.at("earthGem");
 							gem.isSolid = true;
 							cell.cellContents.push_back(gem);
@@ -535,7 +568,6 @@ bool Map::interact(Player& player) {
 						break;
 					case 'y':
 						if (player.itemCollected["airGem"]) {
-							cell.cellContents.pop_back();
 							Entity gem = this->tileAtlas.at("airGem");
 							gem.isSolid = true;
 							cell.cellContents.push_back(gem);
@@ -545,7 +577,6 @@ bool Map::interact(Player& player) {
 						break;						
 					case 'b':
 						if (player.itemCollected["waterGem"]) {
-							cell.cellContents.pop_back();
 							Entity gem = this->tileAtlas.at("waterGem");
 							gem.isSolid = true;
 							cell.cellContents.push_back(gem);

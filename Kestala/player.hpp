@@ -10,7 +10,7 @@ class Player : public Entity {
 public:
 
 	//player movement
-	float moveSpeed;
+	float moveSpeed = 0.125;
 	sf::Vector2f movePosition(sf::Keyboard::Key& dirKey);
 	void setPosition(sf::Vector2f position);
 
@@ -42,7 +42,6 @@ public:
 		this->spells = 3;
 		this->key = 0;
 		this->grimoire = false;
-		this->moveSpeed = 0.25;
 		this->beenHit = false;
 		this->sprite.setOrigin(sf::Vector2f(0.0f, 0.0f));
 		this->sprite.setPosition(initialPos);

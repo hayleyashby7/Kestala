@@ -1,5 +1,9 @@
 #ifndef MAP_HPP
 #define MAP_HPP
+#define airColour sf::Color(255,204,0,255)
+#define fireColour sf::Color(255,51,0,255)
+#define earthColour sf::Color(0,255,0,255)
+#define waterColour sf::Color(51,153,255,255)
 
 #include <SFML\Graphics.hpp>
 #include <boost\heap\fibonacci_heap.hpp>

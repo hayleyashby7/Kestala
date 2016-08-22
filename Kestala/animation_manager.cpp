@@ -57,7 +57,17 @@ AnimationManager::AnimationManager() {
 	this->startingFrames["opendoor"] = sf::IntRect(96, 64, 32, 32);
 	this->startingFrames["wall"] = sf::IntRect(0, 96, 32, 32);
 	this->startingFrames["floor"] = sf::IntRect(32, 96, 32, 32);
-	this->startingFrames["firegem"] = sf::IntRect(64, 96, 32, 32);
+	this->startingFrames["hiddentreasure"] = sf::IntRect(64, 96, 32, 32);
+	this->startingFrames["treasure"] = sf::IntRect(96, 96, 32, 32);
+	this->startingFrames["clue"] = sf::IntRect(0, 128, 32, 32);
+	this->startingFrames["minortreasure"] = sf::IntRect(32,128, 32, 32);
+	this->startingFrames["key"] = sf::IntRect(64,128, 32, 32);
+	this->startingFrames["altar"] = sf::IntRect(96,128, 32, 32);
+	this->startingFrames["gem"] = sf::IntRect(0,160, 32, 32);
+	
+
+
+	/*this->startingFrames["firegem"] = sf::IntRect(64, 96, 32, 32);
 	this->startingFrames["earthgem"] = sf::IntRect(96, 96, 32, 32);
 	this->startingFrames["airgem"] = sf::IntRect(0, 128, 32, 32);
 	this->startingFrames["watergem"] = sf::IntRect(32, 128, 32, 32);
@@ -69,6 +79,6 @@ AnimationManager::AnimationManager() {
 	this->startingFrames["treasure"] = sf::IntRect(96, 192, 32, 32);
 	this->startingFrames["clue"] = sf::IntRect(0, 224, 32, 32);
 	this->startingFrames["minortreasure"] = sf::IntRect(32, 224, 32, 32);
-	this->startingFrames["key"] = sf::IntRect(64, 224, 32, 32);
+	this->startingFrames["key"] = sf::IntRect(64, 224, 32, 32);*/
 
 }
