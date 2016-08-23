@@ -8,6 +8,8 @@
 
 class Player : public Entity {
 public:
+	//spell sprite
+	sf::Vector2f spellOrigin;
 
 	//player movement
 	float moveSpeed = 0.125;
@@ -28,6 +30,7 @@ public:
 	std::string getKeys();
 	void takeDamage();
 	bool isDead();
+	void setSpell(sf::Texture& texture, sf::IntRect texturePosition);
 	std::map <std::string, bool> itemCollected;
 	
 

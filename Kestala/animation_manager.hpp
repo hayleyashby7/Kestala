@@ -16,6 +16,7 @@ public:
 
 	//update sprites
 	void update(sf::Sprite& sprite, sf::Vector2f origin);
+	void update(sf::Sprite& sprite, sf::Vector2f origin, int times);
 
 	//called if player changes direction - update sprite
 	void changeDirection(sf::Keyboard::Key& direction, sf::Sprite& sprite, sf::Vector2f& origin);

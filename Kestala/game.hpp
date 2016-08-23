@@ -32,7 +32,7 @@ public:
 
 	const static int halfWidth = 16;
 	const static int tileHeight = 32;
-	const float gameSpeed = 0.5;
+	const float gameSpeed = 0.3;
 
 	sf::RenderWindow window;
 	TextureManager texmgr;

@@ -26,6 +26,7 @@ sf::Vector2f Player::movePosition(sf::Keyboard::Key& dirKey) {
 
 void Player::setPosition(sf::Vector2f position) {
 	this->sprite.setPosition(position);
+	this->spell.setPosition(this->sprite.getPosition());
 	return;
 }
 
@@ -59,6 +60,17 @@ std::string Player::getKeys() {
 	std::string keyNum = std::to_string(this->key);
 	return keyNum;
 }
+
+void Player::setSpell(sf::Texture& texture, sf::IntRect texturePosition) {
+	this->spell.setOrigin(sf::Vector2f(0.0f, 0.0f));
+	this->spell.setPosition(this->sprite.getPosition());
+	this->spell.setTexture(texture);
+	this->spell.setTextureRect(texturePosition);
+	this->spellOrigin.x = texturePosition.left;
+	this->spellOrigin.y = texturePosition.top;
+}
+
+
 
 bool Player::isDead() {
 	if (this->health <= 0) {

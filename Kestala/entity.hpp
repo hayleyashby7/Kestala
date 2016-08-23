@@ -11,6 +11,7 @@ class Entity {
 public:
 	sf::IntRect rectSource;
 	sf::Sprite sprite;
+	sf::Sprite spell;
 	bool active = true;
 	int tileSize = 32;
 	char id;
@@ -21,13 +22,16 @@ public:
 
 	virtual void draw(sf::RenderWindow& window) {
 		window.draw(this->sprite);
+		window.draw(this->spell);
 	}
 	virtual void updatePos(sf::Vector2f& position) {
 		this->sprite.setPosition(position);
+		this->spell.setPosition(this->sprite.getPosition());
 		return;
 	}
 	virtual sf::Vector2f getPosition() {
 		return this->sprite.getPosition();
+		this->spell.setPosition(this->sprite.getPosition());
 	}
 	virtual void takeDamage() {};
 

@@ -36,6 +36,7 @@ void Map::loadMap(const std::string& filename, int id, unsigned int width, unsig
 
 		case 'L':
 			//locked passage
+			cell.cellContents.push_back(entityAtlas.at("floor"));
 			cell.cellContents.push_back(entityAtlas.at("blockedDoor"));
 			break;
 		case 'k':
@@ -493,8 +494,11 @@ void Map::restartMap(Player& player) {
 	nextLevel = false;
 }
 
-void Map::spell(Player& player) {
+void Map::spell(Player& player, Game* game) {
 	player.spells--;
+	spellTicks = 0;
+	spellCast = true;
+	player.setSpell(game->texmgr.getRef("spritesheet"), game->animgr.firstFrame("spell"));
 	std::vector<sf::Vector2f> nearby = nearPlayer(player);
 	for (auto& enemy : enemies) {
 		for (auto& near : nearby) {
@@ -646,7 +650,23 @@ std::string Map::clueText() {
 	return clue;
 }
 
-void Map::draw(sf::RenderWindow& window) {
+void Map::updateSpell(Player& player, Game* game) {
+	if (spellTicks >= 8) {
+			spellCast = false;
+			spellTicks = 0;
+			player.setSpell(game->texmgr.getRef("spritesheet"), game->animgr.firstFrame("spell"));
+		}
+		else if (spellCast) {
+			game->animgr.update(player.spell, player.spellOrigin, spellTicks);
+			spellTicks++;
+		}
+}
+
+
+void Map::draw(sf::RenderWindow& window, Player &player, Game* game, const float dt) {
+	if (dt > 0.25) {
+		updateSpell(player, game);
+	}
 	for (auto &cell : this->mapCells) {
 		for (auto &content : cell.cellContents) {
 			if (content.active) {

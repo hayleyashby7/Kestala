@@ -30,6 +30,7 @@ public:
 	int gems;
 	int totalGems;
 	int id;
+	int spellTicks;
 
 	
 	bool firstLevel = false;
@@ -38,6 +39,8 @@ public:
 	bool prevVisited = false;
 	bool unlocked = false;
 	bool clueFound = false;
+	bool spellCast = false;
+
 
 
 	sf::Vector2f exitPos;
@@ -61,7 +64,8 @@ public:
 	//entity interactions
 	bool playerCollision(sf::Vector2f position, Player& player);
 	bool enemyCollision(sf::Vector2f position,Enemy& enemy, Player& player);
-	void spell(Player& player);
+	void spell(Player& player, Game* game);
+	void updateSpell(Player& player, Game* game);
 	bool interact(Player& player);
 	std::vector<sf::Vector2f> nearPlayer(Player& player);
 	void unlockTreasure();
@@ -72,8 +76,7 @@ public:
 	void returnMap(Player& player);
 	void restartMap(Player& player);
 
-
-	void draw(sf::RenderWindow& window);
+	void draw(sf::RenderWindow& window, Player &player, Game* game, const float dt);
 
 	Map() {		
 		this->width = 0;
@@ -97,7 +100,7 @@ public:
 	}
 
 	Map(const std::string& filename, int id, unsigned int width, unsigned int height, unsigned int tileSize,
-		std::map<std::string, Tile>& tileAtlas, Game* game, Player& player, bool first) {
+		std::map<std::string, Tile>& tileAtlas, Game* game, Player& player, bool first)  {
 		this->width = width;
 		this->height = height;
 		this->tileSize = tileSize;

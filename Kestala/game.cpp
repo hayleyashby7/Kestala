@@ -21,7 +21,7 @@ void Game::loadTiles() {
 	sf::Texture& spriteSheet(texmgr.getRef("spritesheet"));
 	this->tileAtlas["floor"] = Tile(this->tileHeight, spriteSheet, animgr.firstFrame("floor"), false, Entity::entityType::FLOOR, 'F');
 	this->tileAtlas["wall"] = Tile(this->tileHeight, spriteSheet, animgr.firstFrame("wall"), true, Entity::entityType::WALL, 'W');
-	this->tileAtlas["exit"] = Tile(this->tileHeight, spriteSheet, animgr.firstFrame("opendoor"), false, Entity::entityType::EXIT, 'E');
+	this->tileAtlas["exit"] = Tile(this->tileHeight, spriteSheet, animgr.firstFrame("exit"), false, Entity::entityType::EXIT, 'E');
 	this->tileAtlas["openDoor"] = Tile(this->tileHeight, spriteSheet, animgr.firstFrame("opendoor"), false, Entity::entityType::DOOR, 'O');
 	this->tileAtlas["blockedDoor"] = Tile(this->tileHeight, spriteSheet, animgr.firstFrame("blockeddoor"), true, Entity::entityType::DOOR, 'B');
 	this->tileAtlas["start"] = Tile(this->tileHeight, spriteSheet, animgr.firstFrame("opendoor"),  false, Entity::entityType::START, 'S');
@@ -38,7 +38,8 @@ void Game::loadTiles() {
 	this->tileAtlas["clue"] = Tile(this->tileHeight, spriteSheet, animgr.firstFrame("clue"), false, Entity::entityType::PICKUP, 'C');
 	this->tileAtlas["minorTreasure"] = Tile(this->tileHeight, spriteSheet, animgr.firstFrame("minortreasure"), false, Entity::entityType::PICKUP, 'M');
 	this->tileAtlas["key"] = Tile(this->tileHeight, spriteSheet, animgr.firstFrame("key"), false, Entity::entityType::PICKUP, 'K');
-	
+	this->tileAtlas["spell"] = Tile(this->tileHeight, spriteSheet, animgr.firstFrame("spell"), false, Entity::entityType::INTERACTIVE, 'S');
+
 
 }
 

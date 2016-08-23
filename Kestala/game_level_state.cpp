@@ -18,7 +18,7 @@ void GameLevel::draw(const float dt) {
 	this->game->window.draw(this->game->background);
 	gui.draw(this->game->window);
 	if (start) {
-		map.draw(this->game->window);
+		map.draw(this->game->window, this->player, this->game, dt);
 		player.draw(this->game->window);
 	}
 	return;
@@ -38,6 +38,7 @@ void GameLevel::update(sf::Clock& clock) {
 		if (this->map.nextLevel) {
 			this->map.prevVisited = true;
 			if (prevLevels.size() >= this->map.id) {
+				
 				prevLevels[currentLevel - 1] = this->map;
 			}
 			else {
@@ -85,16 +86,19 @@ void GameLevel::update(sf::Clock& clock) {
 
 		}
 
-		/*Enemy movement*/
-		float dt = clock.getElapsedTime().asSeconds();
-		if (dt > this->game->gameSpeed) {
-			this->map.enemyMove(player, this->game);
+		/*Update enemies*/
+		float dt = clock.getElapsedTime().asSeconds();	
+		if (dt > this->game->gameSpeed) {	
+			this->map.enemyMove(player, this->game);			
 			if (this->player.beenHit) {
 				this->game->audmgr.addBufferToQueue("playerhit");
 			}
 			gameOver = player.isDead();
 			this->player.beenHit = false;
 		}
+			
+				
+
 		this->gui.update("health", "Health: " + this->player.getHealth());
 		this->gui.update("spells", "Spells: " + this->player.getSpells());
 		this->gui.update("gem", "Gems Gathered: " + this->player.getGems());
@@ -149,7 +153,7 @@ void GameLevel::eventHandler() {
 			}
 			if (event.key.code == sf::Keyboard::Return) {
 				if (this->player.spells > 0) {
-					this->map.spell(this->player);
+					this->map.spell(this->player, this->game);
 					this->game->audmgr.addBufferToQueue("explode");
 				}
 			}
