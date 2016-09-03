@@ -22,12 +22,12 @@ void AnimationManager::update(sf::Sprite& sprite, sf::Vector2f spriteOrigin) {
 void AnimationManager::update(sf::Sprite& sprite, sf::Vector2f spriteOrigin, int times) {
 	if (times < 3) {
 		sf::IntRect newRect = sprite.getTextureRect();
-		newRect.left += 32;
+		newRect.top += 96;
 		sprite.setTextureRect(newRect);
 	}
-	else if (times >= 4 && times < 8) {
+	else if (times >= 4 && times < 7) {
 		sf::IntRect newRect = sprite.getTextureRect();
-		newRect.left -= 32;
+		newRect.top -= 96;
 		sprite.setTextureRect(newRect);
 	}
 	return;
@@ -78,5 +78,5 @@ AnimationManager::AnimationManager() {
 	this->startingFrames["altar"] = sf::IntRect(96,128, 32, 32);
 	this->startingFrames["gem"] = sf::IntRect(0,160, 32, 32);
 	this->startingFrames["exit"] = sf::IntRect(32, 160, 32, 32);
-	this->startingFrames["spell"] = sf::IntRect(0, 192, 32, 32);
+	this->startingFrames["spell"] = sf::IntRect(0, 192, 96, 96);
 }

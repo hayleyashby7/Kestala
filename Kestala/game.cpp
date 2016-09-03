@@ -44,10 +44,18 @@ void Game::loadTiles() {
 }
 
 void Game::loadAudio() {
-	audmgr.loadSoundBuffer("pickup", "assets/sounds/pickup.wav");
+	audmgr.loadSoundBuffer("key", "assets/sounds/key.wav");
 	audmgr.loadSoundBuffer("playerhit", "assets/sounds/playerhit.wav");
-	audmgr.loadSoundBuffer("unlockdoor", "assets/sounds/unlockdoor.wav");
-	audmgr.loadSoundBuffer("explode", "assets/sounds/explode.wav");
+	audmgr.loadSoundBuffer("unlockdoor", "assets/sounds/openDoor.wav");
+	audmgr.loadSoundBuffer("spell", "assets/sounds/spell.wav");
+	audmgr.loadSoundBuffer("fire", "assets/sounds/fire.wav");
+	audmgr.loadSoundBuffer("earth", "assets/sounds/earth.wav");
+	audmgr.loadSoundBuffer("water", "assets/sounds/water.wav");
+	audmgr.loadSoundBuffer("air", "assets/sounds/air.wav");
+	audmgr.loadSoundBuffer("clue", "assets/sounds/clue.wav");
+	audmgr.loadSoundBuffer("treasure", "assets/sounds/treasure.wav");
+	audmgr.loadSoundBuffer("unlock", "assets/sounds/unlock.wav");
+
 }
 
 

@@ -62,15 +62,13 @@ std::string Player::getKeys() {
 }
 
 void Player::setSpell(sf::Texture& texture, sf::IntRect texturePosition) {
-	this->spell.setOrigin(sf::Vector2f(0.0f, 0.0f));
+	this->spell.setOrigin(sf::Vector2f(32.0f, 32.0f));
 	this->spell.setPosition(this->sprite.getPosition());
 	this->spell.setTexture(texture);
 	this->spell.setTextureRect(texturePosition);
 	this->spellOrigin.x = texturePosition.left;
 	this->spellOrigin.y = texturePosition.top;
 }
-
-
 
 bool Player::isDead() {
 	if (this->health <= 0) {

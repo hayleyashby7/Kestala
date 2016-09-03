@@ -27,6 +27,7 @@ private:
 	int currentLevel;
 	int maxLevel = 4;
 	int altarsUnlocked;
+	std::vector <bool> itemCollected;
 	sf::Clock keyPress;
 	sf::Keyboard::Key lastPressed;
 

@@ -1,14 +1,16 @@
 CREDITS
-Programming and Art- Hayley Ashby
+Programming- Hayley Ashby
 
-Character Sprites
-Philipp Lenssen under Creative Commons 3.0
+Art
+Philipp Lenssen
 http://blogoscoped.com/archive/2006-08-08-n51.html
-yinakoSGA under Creative Commons 3.0
-http://opengameart.org/content/basic-gems-icon-set
+RLTiles
+http://opengameart.org/content/dungeon-crawl-32x32-tiles
 
 Font
 King Things Fonts under EULA
 http://www.1001freefonts.com/kingthings_foundation.font
 
-Music and SFX- Alasdair Ashby
+Music and SFX
+Alasdair Ashby
+www.freeSFX.co.uk

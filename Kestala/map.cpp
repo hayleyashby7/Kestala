@@ -63,20 +63,24 @@ void Map::loadMap(const std::string& filename, int id, unsigned int width, unsig
 				switch (eType)
 				{
 				case '1':
-					//air enemy
-					enemy.sprite.setColor(airColour);
-					break;
+					//fire enemy
+					enemy.sprite.setColor(fireColour);
+					enemy.id = 1;
+					break;					
 				case '2':
 					//earth enemy
 					enemy.sprite.setColor(earthColour);
+					enemy.id = 2;
 					break;
 				case '3':
-					//fire enemy
-					enemy.sprite.setColor(fireColour);
+					//air enemy
+					enemy.sprite.setColor(airColour);
+					enemy.id = 3;
 					break;
 				case '4':
 					//water enemy
 					enemy.sprite.setColor(waterColour);
+					enemy.id = 4;
 					break;
 				default:
 					break;
@@ -325,7 +329,7 @@ sf::Vector2f Map::enemyPathFinder(Enemy& enemy, Player& player) {
 	}
 }
 
-bool Map::playerCollision(sf::Vector2f position, Player& player) {
+bool Map::playerCollision(sf::Vector2f position, Player& player, std::string& soundEffect) {
 	position.x = position.x / tileSize;
 	position.y = position.y / tileSize;
 
@@ -374,7 +378,7 @@ bool Map::playerCollision(sf::Vector2f position, Player& player) {
 							//fire gem
 							player.itemCollected["fireGem"] = true;
 							player.gems++;
-							while (player.health < 100 || healthAdd < 0) {
+							while (player.health < 100 || healthAdd > 0) {
 								player.health++;
 								healthAdd--;
 							}
@@ -382,6 +386,7 @@ bool Map::playerCollision(sf::Vector2f position, Player& player) {
 								player.spells++;
 							}
 							cell.cellContents.pop_back();
+							soundEffect = "fire";
 							return false;
 													
 						break;
@@ -389,7 +394,7 @@ bool Map::playerCollision(sf::Vector2f position, Player& player) {
 							//earth gem
 							player.itemCollected["earthGem"] = true;
 							player.gems++;
-							while (player.health < 100 || healthAdd < 0) {
+							while (player.health < 100 || healthAdd > 0) {
 								player.health++;
 								healthAdd--;
 							}
@@ -397,13 +402,14 @@ bool Map::playerCollision(sf::Vector2f position, Player& player) {
 								player.spells++;
 							}
 							cell.cellContents.pop_back();
+							soundEffect = "earth";
 							return false;														
 							break;
 						case 'a':
 							//air gem
 							player.itemCollected["airGem"] = true;
 							player.gems++;
-							while (player.health < 100 || healthAdd < 0) {
+							while (player.health < 100 || healthAdd > 0) {
 								player.health++;
 								healthAdd--;
 							}
@@ -411,13 +417,14 @@ bool Map::playerCollision(sf::Vector2f position, Player& player) {
 								player.spells++;
 							}
 							cell.cellContents.pop_back();
+							soundEffect = "air";
 							return false;
 							break;
 						case 'w':
 							//water gem
 							player.itemCollected["waterGem"] = true;
 							player.gems++;
-							while (player.health < 100 || healthAdd < 0) {
+							while (player.health < 100 || healthAdd > 0) {
 								player.health++;
 								healthAdd--;
 							}
@@ -425,6 +432,7 @@ bool Map::playerCollision(sf::Vector2f position, Player& player) {
 								player.spells += 1;
 							}
 							cell.cellContents.pop_back();
+							soundEffect = "water";
 							return false;
 							break;
 						case 'T':
@@ -435,14 +443,17 @@ bool Map::playerCollision(sf::Vector2f position, Player& player) {
 						case 'C':
 							//clue
 							clueFound = true;
+							soundEffect = "clue";
 							break;
 						case 'M':
 							//minor treasure
 							player.gold += 20;
+							soundEffect = "treasure";
 							break;
 						case 'K':
 							//key
 							player.key++;
+							soundEffect = "key";
 							break;
 						default:
 							break;
@@ -502,6 +513,7 @@ void Map::spell(Player& player, Game* game) {
 	std::vector<sf::Vector2f> nearby = nearPlayer(player);
 	for (auto& enemy : enemies) {
 		for (auto& near : nearby) {
+
 			if (enemy.getPosition() == near) {
 				switch (enemy.id)
 				{
@@ -516,14 +528,14 @@ void Map::spell(Player& player, Game* game) {
 					}					
 					break;
 				case 2:
-					//air enemy
-					if (player.itemCollected["airGem"]) {
+					//earth enemy
+					if (player.itemCollected["earthGem"]) {
 						enemy.active = false;
 					}
 					break;
 				case 3:
-					//earth enemy
-					if (player.itemCollected["earthGem"]) {
+					//air enemy
+					if (player.itemCollected["airGem"]) {
 						enemy.active = false;
 					}
 					break;
@@ -542,7 +554,7 @@ void Map::spell(Player& player, Game* game) {
 }
 
 
-bool Map::interact(Player& player) {
+bool Map::interact(Player& player, std::string& soundEffect) {
 	sf::Vector2f position = player.getPosition();
 	std::vector<sf::Vector2f> nearby = nearPlayer(player);
 	for (auto &cell : this->mapCells) {
@@ -607,6 +619,7 @@ bool Map::interact(Player& player) {
 							cell.cellContents.push_back(door);
 							this->unlocked = true;
 							player.key--;
+							soundEffect = "unlockdoor";
 							return false;
 						}
 					}
@@ -651,7 +664,7 @@ std::string Map::clueText() {
 }
 
 void Map::updateSpell(Player& player, Game* game) {
-	if (spellTicks >= 8) {
+	if (spellTicks >= 7) {
 			spellCast = false;
 			spellTicks = 0;
 			player.setSpell(game->texmgr.getRef("spritesheet"), game->animgr.firstFrame("spell"));

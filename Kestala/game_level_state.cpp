@@ -154,15 +154,20 @@ void GameLevel::eventHandler() {
 			if (event.key.code == sf::Keyboard::Return) {
 				if (this->player.spells > 0) {
 					this->map.spell(this->player, this->game);
-					this->game->audmgr.addBufferToQueue("explode");
+					this->game->audmgr.addBufferToQueue("spell");
 				}
 			}
  			if (event.key.code == sf::Keyboard::Space) {
-				if (this->map.interact(this->player)) {
+				std::string soundEffect = "";
+				if (this->map.interact(this->player, soundEffect)) {
 					this->altarsUnlocked++;
 					if (altarsUnlocked == 4) {
 						this->map.unlockTreasure();
+						soundEffect = "unlock";
 					}
+				}
+				if (soundEffect.length() > 0) {
+					this->game->audmgr.addBufferToQueue(soundEffect);
 				}
 			}
 		}								
@@ -175,24 +180,20 @@ void GameLevel::eventHandler() {
 }
 
 void GameLevel::playerMove(sf::Keyboard::Key& dirKey) {	
-	int gems = player.gems;
 	sf::Vector2f newPos = player.movePosition(dirKey);
 	if (dirKey != lastPressed) {
 		this->game->animgr.changeDirection(dirKey, player.sprite, player.spriteOrigin);
 	}
-	if (!map.playerCollision(newPos, player)) {
+	std::string soundEffect = "";
+	if (!map.playerCollision(newPos, player, soundEffect)) {
 		player.updatePos(newPos);
-	}
-	if (gems < player.gems) {
-		this->game->audmgr.addBufferToQueue("pickup");
-	}
+	}	
 	gameWon = player.grimoire;
 	gameOver = player.isDead();
 	this->player.beenHit = false;
-	if (this->map.unlocked) {
-		this->game->audmgr.addBufferToQueue("unlockdoor");
-		this->map.unlocked = false;
-	}
+	if (soundEffect.length() > 0) {
+		this->game->audmgr.addBufferToQueue(soundEffect);
+	}	
 }
 
 GameLevel::GameLevel(Game* game) {
@@ -201,6 +202,7 @@ GameLevel::GameLevel(Game* game) {
 	this->start = false;
 	this->altarsUnlocked = 0;
 	this->player = player;
+	this->itemCollected = {false, false, false, false};
 	this->game->bgMusic.openFromFile("assets/sounds/level.wav");
 	this->game->bgMusic.setVolume(25);
 	this->game->bgMusic.setLoop(true);

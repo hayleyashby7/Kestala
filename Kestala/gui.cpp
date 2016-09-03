@@ -46,7 +46,7 @@ void Gui::draw(sf::RenderWindow& window) {
 
 void Gui::update(std::string key, std::string newValue) {
 	if (key.compare("intro") == 0) {
-		intro.setString("You are Wryn, a brave sorcerer-in-training.\nDesperate to prove yourself a master of the arcane,\nyou seek 'Kestala's Grimoire',\n a long-lost spellbook of great power.\n\n\nDetermined, you bravely explore the haunted caves\nwhere the Grimoire is rumoured to be hidden.\nready to face whatever challenges await you...\n...and hopefully find some extra treasure.\n\nPress Y to begin your adventure.");
+		intro.setString("You are Wryn, a poor but brave sorcerer-in-training.\nDesperate to prove yourself a master of the arcane,\n you seek a long-lost spellbook of great power.\n\n Kestala's Grimoire\n\n\nDetermined, you bravely explore the haunted caves\nwhere the Grimoire is rumoured to be hidden.\n You know the tales of skeletons, \nof ancient magics and vast treasures \n all of which lie within the Kestala Caves.\n You must be ready to face whatever challenges await you\n\nIf you are ready, press Y to begin your adventure.");
 	}
 	else {
 		guiText[key].setString(newValue);
