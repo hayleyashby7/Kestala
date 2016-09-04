@@ -18,6 +18,7 @@ private:
 	
 	Map map;
 	Gui gui;
+	sf::Clock startClock;
 	
 	std::map<std::string, std::string> mapFiles;
 	std::map<std::string, Map> mapList;

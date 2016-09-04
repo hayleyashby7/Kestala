@@ -25,6 +25,17 @@ void GameLevel::draw(const float dt) {
 }
 
 void GameLevel::update(sf::Clock& clock) {
+	if (!start) {
+		if (startClock.getElapsedTime().asSeconds() >= 10) {
+			this->start = true;
+			this->gui.intro.setString("");
+		}
+		else {
+			int time = 11 - this->startClock.getElapsedTime().asSeconds();
+			this->gui.update("intro", std::to_string(time));
+		}
+		
+	}
 	if (start) {
 		/*Check Game Over*/
 		if (this->gameOver) {
@@ -107,7 +118,7 @@ void GameLevel::update(sf::Clock& clock) {
 		if (this->map.clueFound) {
 			this->gui.update("t_clue", this->map.clueText());
 		}
-		this->game->audmgr.playSound(this->game->SFX);
+		this->game->audmgr.playSound(this->game->SFX, this->game->SFXbackup);
 		return;
 	}
 }
@@ -126,11 +137,6 @@ void GameLevel::eventHandler() {
 
 		/*Key Pressed*/
 		case sf::Event::KeyPressed: {
-			if (event.key.code == sf::Keyboard::Y) {
-				this->start = true;
-				this->gui.intro.setString("");
-				break;
-			}
 			if (event.key.code == sf::Keyboard::Q) {
 				game->window.close();
 				break;
@@ -218,8 +224,10 @@ GameLevel::GameLevel(Game* game) {
 	map = Map(mapFiles["map1"], currentLevel, 15,15,32, game->tileAtlas, game, player, true);
 	mapList["map1"] = map;
 	map.distanceCalculation(player);
-	this->gui.update("intro", "");
+	this->startClock.restart();
+	this->gui.update("intro", std::to_string(this->startClock.getElapsedTime().asSeconds()));
 	this->gui.update("level", "Level: " + std::to_string(currentLevel));
 	this->gui.update("spells", "Spells: " + std::to_string(this->player.spells));
+	
 
 }

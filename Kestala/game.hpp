@@ -43,6 +43,7 @@ public:
 	sf::Music bgMusic;
 	sf::Music menuMusic;
 	sf::Sound SFX;
+	sf::Sound SFXbackup;
 
 	std::map<std::string, Tile> tileAtlas;
 

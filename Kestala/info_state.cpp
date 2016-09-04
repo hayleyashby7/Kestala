@@ -39,6 +39,8 @@ void Info::eventHandler() {
 			}
 			if (event.key.code == sf::Keyboard::B) {
 				if (type.compare("win") == 0 || type.compare("dead") == 0) {
+					this->game->bgMusic.stop();
+					this->game->audmgr.clearQueue();
 					this->game->newGame(new MainMenu(this->game));
 					break;
 				}

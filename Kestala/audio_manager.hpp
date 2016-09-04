@@ -22,9 +22,11 @@ public:
 
 	//add sounds to queue
 	void addBufferToQueue(std::string bufferName);
+	//clear queue
+	void clearQueue();
 
 	//play sounds in queue
-	void playSound(sf::Sound& sound);
+	void playSound(sf::Sound& sound1, sf::Sound& sound2);
 
 	//Constructor
 	AudioManager() {
